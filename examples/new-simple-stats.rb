@@ -17,7 +17,7 @@ $: << File.expand_path("../../lib", __FILE__)
 require 'packetfu'
 
 def print_results(stats)
-  stats.each_pair { |k,v| puts "%-12s: %10d" % [k,v] }
+  stats.each_pair { |k, v| puts "%-12s: %10d" % [k, v] }
 end
 
 # Takes a file name, parses the packets, and records the packet

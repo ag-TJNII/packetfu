@@ -1,11 +1,9 @@
 # -*- coding: binary -*-
 
 module PacketFu
-
   # Module to handle PCAP-NG file format.
   # See http://xml2rfc.tools.ietf.org/cgi-bin/xml2rfc.cgi?url=https://raw.githubusercontent.com/pcapng/pcapng/master/draft-tuexen-opsawg-pcapng.xml&modeAsFormat=html/ascii&type=ascii#format_idb
   module PcapNG
-
     # Section Header Block type number
     SHB_TYPE = StructFu::Int32.new(0x0A0D0D0A, :little)
     # Interface Description Block type number
@@ -21,12 +19,10 @@ module PacketFu
     LINKTYPE_ETHERNET = 1
 
     class Error < StandardError; end
+
     class InvalidFileError < Error; end
-
   end
-
 end
-
 
 require_relative 'pcapng/block.rb'
 require_relative 'pcapng/unknown_block.rb'

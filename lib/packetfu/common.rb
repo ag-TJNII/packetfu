@@ -2,7 +2,6 @@ require 'packetfu/structfu'
 require 'packetfu/packet'
 
 module PacketFu
-
   # Deal with Ruby's encoding by ignoring it.
   def self.force_binary(str)
     str.force_encoding Encoding::BINARY if str.respond_to? :force_encoding
@@ -44,7 +43,7 @@ module PacketFu
 
   # Returns an array of classes defined in PacketFu
   def self.classes
-    constants.map { |const| const_get(const) if const_get(const).kind_of? Class}.compact
+    constants.map { |const| const_get(const) if const_get(const).kind_of? Class }.compact
   end
 
   # Adds the class to PacketFu's list of packet classes -- used in packet parsing.
@@ -53,6 +52,7 @@ module PacketFu
     if klass.name !~ /[A-Za-z0-9]Packet/
       raise "Packet classes should be named 'ProtoPacket'"
     end
+
     @packet_classes ||= []
     @packet_classes << klass
     self.clear_packet_groups
@@ -62,6 +62,7 @@ module PacketFu
   # Presumably, there may be a time where you'd like to remove a packet class.
   def self.remove_packet_class(klass)
     raise "Need a class" unless klass.kind_of? Class
+
     @packet_classes ||= []
     @packet_classes.delete klass
     self.clear_packet_groups
@@ -76,18 +77,21 @@ module PacketFu
   # Returns an array of packet types by packet prefix.
   def self.packet_prefixes
     return [] if @packet_classes.nil?
+
     self.reset_packet_groups unless @packet_class_prefixes
     @packet_class_prefixes
   end
 
   def self.packet_classes_by_layer
     return [] if @packet_classes.nil?
+
     self.reset_packet_groups unless @packet_classes_by_layer
     @packet_classes_by_layer
   end
 
   def self.packet_classes_by_layer_without_application
     return [] if @packet_classes.nil?
+
     self.reset_packet_groups unless @packet_classes_by_layer_without_application
     @packet_classes_by_layer_without_application
   end
@@ -99,7 +103,7 @@ module PacketFu
   end
 
   def self.reset_packet_groups
- 		@packet_class_prefixes = @packet_classes.map {|p| p.to_s.split("::").last.to_s.downcase.gsub(/packet$/,"")}
+    @packet_class_prefixes = @packet_classes.map { |p| p.to_s.split("::").last.to_s.downcase.gsub(/packet$/, "") }
     @packet_classes_by_layer = @packet_classes.sort_by { |pclass| pclass.layer }.reverse
     @packet_classes_by_layer_without_application = @packet_classes_by_layer.reject { |pclass| pclass.layer_symbol == :application }
   end
@@ -114,15 +118,15 @@ module PacketFu
   # Setter for PacketFu's @inspect_style
   def self.inspect_style=(arg)
     @inspect_style = case arg
-      when :hex, :pretty
-        :hex
-      when :dissect, :verbose
-        :dissect
-      when :default, :ugly
-        :default
-      else
-        :dissect
-      end
+                     when :hex, :pretty
+                       :hex
+                     when :dissect, :verbose
+                       :dissect
+                     when :default, :ugly
+                       :default
+                     else
+                       :dissect
+                     end
   end
 
   # Switches inspect styles in a round-robin fashion between

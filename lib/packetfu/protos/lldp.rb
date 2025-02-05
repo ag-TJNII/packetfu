@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 require 'packetfu/protos/eth/header'
 require 'packetfu/protos/eth/mixin'
 
@@ -6,7 +7,6 @@ require 'packetfu/protos/lldp/header'
 require 'packetfu/protos/lldp/mixin'
 
 module PacketFu
-
   class LLDPPacket < Packet
     MAGIC = Regexp.new("^\x01\x80\xc2\x00\x00[\x0e\x03\x00]".force_encoding('ASCII-8BIT'), Regexp::NOENCODING)
     include ::PacketFu::EthHeaderMixin
@@ -17,16 +17,17 @@ module PacketFu
     def self.can_parse?(str)
       return false unless EthPacket.can_parse? str
       return false unless str.size >= 6
-      return false unless str[12,2] == "\x88\xcc"
+      return false unless str[12, 2] == "\x88\xcc"
       return false unless str =~ MAGIC
+
       true
     end
 
-    def initialize(args={})
+    def initialize(args = {})
       @eth_header = EthHeader.new(args).read(args[:eth])
       @lldp_header = LLDPHeader.new(args).read(args[:lldp])
       @eth_header.eth_proto = "\x88\xCC"
-      @eth_header.body=@lldp_header
+      @eth_header.body = @lldp_header
 
       @headers = [@eth_header, @lldp_header]
       super
@@ -45,7 +46,7 @@ module PacketFu
 
     # While there are lengths in LLDPPackets, there's not
     # much to do with them.
-    def recalc(args={})
+    def recalc(args = {})
       @headers[0].inspect
     end
   end

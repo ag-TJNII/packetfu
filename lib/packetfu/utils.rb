@@ -1,13 +1,12 @@
 # -*- coding: binary -*-
+
 require 'singleton'
 require 'timeout'
 
 module PacketFu
-
   # Utils is a collection of various and sundry network utilities that are useful for packet
   # manipulation.
   class Utils
-
     # Returns the MAC address of an IP address, or nil if it's not responsive to arp. Takes
     # a dotted-octect notation of the target IP address, as well as a number of parameters:
     #
@@ -34,7 +33,7 @@ module PacketFu
     #
     #  It goes without saying, spewing forged ARP packets on your network is a great way to really
     #  irritate your co-workers.
-    def self.arp(target_ip,args={})
+    def self.arp(target_ip, args = {})
       unless args[:no_cache]
         cache = self.arp_cache
         return cache[target_ip].first if cache[target_ip]
@@ -50,7 +49,7 @@ module PacketFu
       cap_thread = Thread.new do
         target_mac = nil
         cap = PacketFu::Capture.new(:iface => iface, :start => true,
-        :filter => "arp src #{target_ip} and ether dst #{arp_pkt.eth_saddr}")
+                                    :filter => "arp src #{target_ip} and ether dst #{arp_pkt.eth_saddr}")
         arp_pkt.to_w(iface) # Shorthand for sending single packets to the default interface.
         timeout = 0
         while target_mac.nil? && timeout <= (args[:timeout] || 3)
@@ -93,7 +92,7 @@ module PacketFu
 
     # A helper for getting a random port number
     def self.rand_port
-      rand(0xffff-1024)+1024
+      rand(0xffff - 1024) + 1024
     end
 
     # Discovers the local IP and Ethernet address, which is useful for writing
@@ -117,10 +116,11 @@ module PacketFu
     #    you will need to specify a target which will use this interface.
     #   :target => "1.2.3.4"
     #    A target IP address. By default, a packet will be sent to a random address in the 177/8 network.
-    def self.whoami?(args={})
+    def self.whoami?(args = {})
       unless args.kind_of? Hash
         raise ArgumentError, "Argument to `whoami?' must be a Hash"
       end
+
       if args[:iface].to_s =~ /^lo/ # Linux loopback more or less. Need a switch for windows loopback, too.
         dst_host = "127.0.0.1"
       else
@@ -128,11 +128,11 @@ module PacketFu
       end
 
       dst_port = rand_port
-      msg = "PacketFu whoami? packet #{(Time.now.to_i + rand(0xffffff)+1)}"
-      iface = (args[:iface] || ENV['IFACE'] || default_int || :lo ).to_s
+      msg = "PacketFu whoami? packet #{(Time.now.to_i + rand(0xffffff) + 1)}"
+      iface = (args[:iface] || ENV['IFACE'] || default_int || :lo).to_s
       cap = PacketFu::Capture.new(:iface => iface, :promisc => false, :start => true, :filter => "udp and dst host #{dst_host} and dst port #{dst_port}")
       udp_sock = UDPSocket.new
-      udp_sock.send(msg,0,dst_host,dst_port)
+      udp_sock.send(msg, 0, dst_host, dst_port)
       udp_sock = nil
 
       my_data = nil
@@ -162,7 +162,7 @@ module PacketFu
               }
 
             else raise SecurityError,
-              "whoami() packet doesn't match sent data. Something fishy's going on."
+                       "whoami() packet doesn't match sent data. Something fishy's going on."
             end
 
           end
@@ -177,14 +177,14 @@ module PacketFu
     # Determine the default ip address
     def self.default_ip
       begin
-        orig, Socket.do_not_reverse_lookup = Socket.do_not_reverse_lookup, true  # turn off reverse DNS resolution temporarily
+        orig, Socket.do_not_reverse_lookup = Socket.do_not_reverse_lookup, true # turn off reverse DNS resolution temporarily
 
-  			UDPSocket.open do |s|
-    			s.connect rand_routable_daddr.to_s, rand_port
-    			s.addr.last
-  			end
+        UDPSocket.open do |s|
+          s.connect rand_routable_daddr.to_s, rand_port
+          s.addr.last
+        end
       ensure
-  			Socket.do_not_reverse_lookup = orig
+        Socket.do_not_reverse_lookup = orig
       end
     end
 
@@ -203,11 +203,12 @@ module PacketFu
     end
 
     # Determine the ifconfig data string for a given interface
-    def self.ifconfig_data_string(iface=default_int)
+    def self.ifconfig_data_string(iface = default_int)
       # Make sure to only get interface data for a real interface
-      unless Socket.getifaddrs.any? {|ifaddr| ifaddr.name == iface}
+      unless Socket.getifaddrs.any? { |ifaddr| ifaddr.name == iface }
         raise ArgumentError, "#{iface} interface does not exist"
       end
+
       return %x[ifconfig #{iface}]
     end
 
@@ -233,7 +234,7 @@ module PacketFu
     #   #=> {:eth_saddr=>"00:1c:23:35:70:3b", :eth_src=>"\000\034#5p;", :ip_saddr=>"10.10.10.9", :ip4_obj=>#<IPAddr: IPv4:10.10.10.0/255.255.254.0>, :ip_src=>"\n\n\n\t", :iface=>"eth0", :ip6_saddr=>"fe80::21c:23ff:fe35:703b/64", :ip6_obj=>#<IPAddr: IPv6:fe80:0000:0000:0000:0000:0000:0000:0000/ffff:ffff:ffff:ffff:0000:0000:0000:0000>}
     #   PacketFu::Utils.ifconfig :lo
     #   #=> {:ip_saddr=>"127.0.0.1", :ip4_obj=>#<IPAddr: IPv4:127.0.0.0/255.0.0.0>, :ip_src=>"\177\000\000\001", :iface=>"lo", :ip6_saddr=>"::1/128", :ip6_obj=>#<IPAddr: IPv6:0000:0000:0000:0000:0000:0000:0000:0001/ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff>}
-    def self.ifconfig(iface=default_int)
+    def self.ifconfig(iface = default_int)
       ret = {}
       iface = iface.to_s.scan(/[0-9A-Za-z]/).join # Sanitizing input, no spaces, semicolons, etc.
       case RUBY_PLATFORM
@@ -291,57 +292,55 @@ module PacketFu
           end
         end # darwin
       when /freebsd/i
-          ifconfig_data = ifconfig_data_string(iface)
-          if ifconfig_data =~ /#{iface}/
-            ifconfig_data = ifconfig_data.split(/[\s]*\n[\s]*/)
-          else
-            raise ArgumentError, "Cannot ifconfig #{iface}"
-          end
-          ret[:iface] = iface
-          ifconfig_data.each do |s|
-            case s
-            when /ether[\s]*([0-9a-fA-F:]{17})/
-              ret[:eth_saddr] = $1.downcase
-              ret[:eth_src] = EthHeader.mac2str(ret[:eth_saddr])
-            when /inet[\s]*([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)(.*netmask[\s]*(0x[0-9a-fA-F]{8}))?/
-              ret[:ip_saddr] = $1
-              ret[:ip_src] = [IPAddr.new($1).to_i].pack("N")
-              ret[:ip4_obj] = IPAddr.new($1)
-              ret[:ip4_obj] = ret[:ip4_obj].mask(($3.hex.to_s(2) =~ /0*$/)) if $3
-            when /inet6[\s]*([0-9a-fA-F:\x2f]+)/
-              ret[:ip6_saddr] = $1
-              ret[:ip6_obj] = IPAddr.new($1)
+        ifconfig_data = ifconfig_data_string(iface)
+        if ifconfig_data =~ /#{iface}/
+          ifconfig_data = ifconfig_data.split(/[\s]*\n[\s]*/)
+        else
+          raise ArgumentError, "Cannot ifconfig #{iface}"
+        end
+        ret[:iface] = iface
+        ifconfig_data.each do |s|
+          case s
+          when /ether[\s]*([0-9a-fA-F:]{17})/
+            ret[:eth_saddr] = $1.downcase
+            ret[:eth_src] = EthHeader.mac2str(ret[:eth_saddr])
+          when /inet[\s]*([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)(.*netmask[\s]*(0x[0-9a-fA-F]{8}))?/
+            ret[:ip_saddr] = $1
+            ret[:ip_src] = [IPAddr.new($1).to_i].pack("N")
+            ret[:ip4_obj] = IPAddr.new($1)
+            ret[:ip4_obj] = ret[:ip4_obj].mask(($3.hex.to_s(2) =~ /0*$/)) if $3
+          when /inet6[\s]*([0-9a-fA-F:\x2f]+)/
+            ret[:ip6_saddr] = $1
+            ret[:ip6_obj] = IPAddr.new($1)
           end
         end # freebsd
       when /openbsd/i
-          ifconfig_data = ifconfig_data_string(iface)
-          if ifconfig_data =~ /#{iface}/
-            ifconfig_data = ifconfig_data.split(/[\s]*\n[\s]*/)
-          else
-            raise ArgumentError, "Cannot ifconfig #{iface}"
-          end
-          ret[:iface] = iface
-          ifconfig_data.each do |s|
-            case s
-            when /lladdr[\s]*([0-9a-fA-F:]{17})/
-              ret[:eth_saddr] = $1.downcase
-              ret[:eth_src] = EthHeader.mac2str(ret[:eth_saddr])
-            when /inet[\s]*([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)(.*netmask[\s]*(0x[0-9a-fA-F]{8}))?/
-              ret[:ip_saddr] = $1
-              ret[:ip_src] = [IPAddr.new($1).to_i].pack("N")
-              ret[:ip4_obj] = IPAddr.new($1)
-              ret[:ip4_obj] = ret[:ip4_obj].mask(($3.hex.to_s(2) =~ /0*$/)) if $3
-            when /inet6[\s]*([0-9a-fA-F:\x2f]+)/
-              ret[:ip6_saddr] = $1
-              ret[:ip6_obj] = IPAddr.new($1)
+        ifconfig_data = ifconfig_data_string(iface)
+        if ifconfig_data =~ /#{iface}/
+          ifconfig_data = ifconfig_data.split(/[\s]*\n[\s]*/)
+        else
+          raise ArgumentError, "Cannot ifconfig #{iface}"
+        end
+        ret[:iface] = iface
+        ifconfig_data.each do |s|
+          case s
+          when /lladdr[\s]*([0-9a-fA-F:]{17})/
+            ret[:eth_saddr] = $1.downcase
+            ret[:eth_src] = EthHeader.mac2str(ret[:eth_saddr])
+          when /inet[\s]*([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)(.*netmask[\s]*(0x[0-9a-fA-F]{8}))?/
+            ret[:ip_saddr] = $1
+            ret[:ip_src] = [IPAddr.new($1).to_i].pack("N")
+            ret[:ip4_obj] = IPAddr.new($1)
+            ret[:ip4_obj] = ret[:ip4_obj].mask(($3.hex.to_s(2) =~ /0*$/)) if $3
+          when /inet6[\s]*([0-9a-fA-F:\x2f]+)/
+            ret[:ip6_saddr] = $1
+            ret[:ip6_obj] = IPAddr.new($1)
           end
         end # openbsd
       end # RUBY_PLATFORM
       ret
     end
-
   end
-
 end
 
 # vim: nowrap sw=2 sts=0 ts=2 ff=unix ft=ruby

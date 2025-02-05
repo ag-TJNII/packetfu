@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 module PacketFu
   # Implements the Reserved bits for TCPHeader.
   #
@@ -9,10 +10,9 @@ module PacketFu
   #  Integer(1 bit)  :r2
   #  Integer(1 bit)  :r3
   class TcpReserved < Struct.new(:r1, :r2, :r3)
-
     include StructFu
 
-    def initialize(args={})
+    def initialize(args = {})
       super(
         args[:r1] || 0,
         args[:r2] || 0,
@@ -28,6 +28,7 @@ module PacketFu
     def read(str)
       force_binary(str)
       return self if str.nil? || str.size.zero?
+
       if 1.respond_to? :ord
         byte = str[0].ord
       else
@@ -38,6 +39,5 @@ module PacketFu
       self[:r3] = byte & 0b00000001 == 0b00000001 ? 1 : 0
       self
     end
-
   end
 end

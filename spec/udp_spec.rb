@@ -9,12 +9,11 @@ include PacketFu
 
 class String
   def bin
-    self.scan(/../).map {|x| x.to_i(16).chr}.join
+    self.scan(/../).map { |x| x.to_i(16).chr }.join
   end
 end
 
 describe UDPPacket do
-
   context 'when read from a pcap file' do
     context '(UDP over IPv4)' do
       before(:all) do
@@ -81,7 +80,7 @@ describe UDPPacket do
         udp_pkt = Packet.parse(udp_packet)
         expect(udp_pkt).to be_kind_of(UDPPacket)
 
-        udp_pkt.payload = udp_pkt.payload.gsub(/metasploit/,"MeatPistol")
+        udp_pkt.payload = udp_pkt.payload.gsub(/metasploit/, "MeatPistol")
         udp_pkt.recalc
         expect(udp_pkt.udp_sum).to eql(0x8341)
       end
@@ -176,5 +175,4 @@ describe UDPPacket do
       expect(stripped.udp_header.body.length).to eql(133)
     end
   end
-
 end

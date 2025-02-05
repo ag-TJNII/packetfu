@@ -5,6 +5,7 @@
 # break real devices! (To do that, you'll need to fix up the targetting)
 target = ARGV[0]
 raise RuntimeError, "Need a target" unless target
+
 action = ARGV[1]
 raise RuntimeError, "Need an action. Try file or your interface." unless action
 

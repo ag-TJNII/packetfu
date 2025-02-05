@@ -2,7 +2,7 @@
 #
 # Tested on:
 #
-#   ruby-1.9.3-head [ x86_64 ]  
+#   ruby-1.9.3-head [ x86_64 ]
 #   ruby-1.9.3-p484 [ x86_64 ]
 
 # Okay so the regular test/unit stuff screws up some of my
@@ -23,9 +23,10 @@ dir.each { |file|
   next unless File.file? file
   next unless file[/^test_.*rb$/]
   next if file == $0
+
   puts "Running #{file}..."
   cmd = %x{ruby #{file}}
-  if cmd[/ 0 failures/] && cmd[/ 0 errors/] 
+  if cmd[/ 0 failures/] && cmd[/ 0 errors/]
     puts "#{file}: All passed"
   else
     puts "File: #{file} had failures or errors:"

@@ -7,8 +7,8 @@ require 'packetfu/pcap'
 
 include PacketFu
 
-def unusual_numeric_handling_headers(header,i)
-  camelized_header = header.to_s.split("_").map {|x| x.capitalize}.join
+def unusual_numeric_handling_headers(header, i)
+  camelized_header = header.to_s.split("_").map { |x| x.capitalize }.join
   header_class = PacketFu.const_get camelized_header
   specify { subject.send(header).should == i }
   specify { subject.send(header).should be_kind_of Integer }
@@ -16,20 +16,18 @@ def unusual_numeric_handling_headers(header,i)
 end
 
 def tcp_hlen_numeric(i)
-  unusual_numeric_handling_headers(:tcp_hlen,i)
+  unusual_numeric_handling_headers(:tcp_hlen, i)
 end
 
 def tcp_reserved_numeric(i)
-  unusual_numeric_handling_headers(:tcp_reserved,i)
+  unusual_numeric_handling_headers(:tcp_reserved, i)
 end
 
 def tcp_ecn_numeric(i)
-  unusual_numeric_handling_headers(:tcp_ecn,i)
+  unusual_numeric_handling_headers(:tcp_ecn, i)
 end
 
-
 describe TCPPacket do
-
   context 'TCPHeader' do
     subject do
       bytes = PcapFile.file_to_array(File.join(File.dirname(__FILE__), "sample2.pcap"))[2]

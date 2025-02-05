@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 require 'spec_helper'
 require 'packetfu/protos/eth'
 require 'packetfu/protos/ip'
@@ -11,15 +12,15 @@ include PacketFu
 
 describe ICMPPacket, "when read from a pcap file" do
   before :all do
-      parsed_packets = PcapFile.read_packets(File.join(File.dirname(__FILE__),"sample.pcap"))
-      @icmp_packet = parsed_packets[3]
+    parsed_packets = PcapFile.read_packets(File.join(File.dirname(__FILE__), "sample.pcap"))
+    @icmp_packet = parsed_packets[3]
 
-      parsed_packets3 = PcapFile.read_packets(File.join(File.dirname(__FILE__),"sample3.pcap"))
-      @icmp_packet2 = parsed_packets3[8] # contains 0x0A byte in payload
+    parsed_packets3 = PcapFile.read_packets(File.join(File.dirname(__FILE__), "sample3.pcap"))
+    @icmp_packet2 = parsed_packets3[8] # contains 0x0A byte in payload
   end
 
   it "should be recognized as an icmp packet" do
-      @icmp_packet.is_icmp?.should be true
+    @icmp_packet.is_icmp?.should be true
   end
 
   it "should report the right seq number" do
@@ -27,7 +28,7 @@ describe ICMPPacket, "when read from a pcap file" do
   end
 
   it "should be recognized as an icmp reply packet" do
-      @icmp_packet.icmp_type.should eq 0
+    @icmp_packet.icmp_type.should eq 0
   end
 
   it "should have the right checksum" do

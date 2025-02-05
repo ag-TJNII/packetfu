@@ -1,13 +1,11 @@
 # -*- coding: binary -*-
 
 module PacketFu
-
   # Packet is the parent class of EthPacket, IPPacket, UDPPacket, TCPPacket, and all
   # other packets. It acts as both a singleton class, so things like
   # Packet.parse can happen, and as an abstract class to provide
   # subclasses some structure.
   class Packet
-
     attr_reader :flavor # Packet Headers are responsible for their own specific flavor methods.
     attr_accessor :headers # All packets have a header collection, useful for determining protocol trees.
     attr_accessor :iface # Default inferface to send packets to
@@ -34,8 +32,8 @@ module PacketFu
     # with an argument of  :parse_app => false. Otherwise, app-layer parsing will happen.
     #
     # It is no longer neccisary to manually add packet types here.
-    def self.parse(packet=nil,args={})
-      parse_app = true if(args[:parse_app].nil? or args[:parse_app])
+    def self.parse(packet = nil, args = {})
+      parse_app = true if (args[:parse_app].nil? or args[:parse_app])
       force_binary(packet)
       if parse_app
         classes = PacketFu.packet_classes_by_layer
@@ -46,7 +44,7 @@ module PacketFu
       new_args = {}
       new_args[:on_ipv6] = true if PacketFu::IPv6Packet.can_parse?(packet)
       p = classes.detect { |pclass| pclass.can_parse?(packet) }.new(new_args)
-      parsed_packet = p.read(packet,args)
+      parsed_packet = p.read(packet, args)
     end
 
     def handle_is_identity(ptype)
@@ -76,37 +74,38 @@ module PacketFu
 
     # Set the outermost payload (body) of the packet.
     def payload=(args)
-      @headers.last.body=(args)
+      @headers.last.body = (args)
     end
 
     # Converts a packet to libpcap format. Bit of a hack?
-    def to_pcap(args={})
+    def to_pcap(args = {})
       p = PcapPacket.new(:endian => args[:endian],
-                        :timestamp => Timestamp.new.to_s,
-                        :incl_len => self.to_s.size,
-                        :orig_len => self.to_s.size,
-                        :data => self)
+                         :timestamp => Timestamp.new.to_s,
+                         :incl_len => self.to_s.size,
+                         :orig_len => self.to_s.size,
+                         :data => self)
     end
 
     # Put the entire packet into a libpcap file. XXX: this is a
     # hack for now just to confirm that packets are getting created
     # correctly. Now with append! XXX: Document this!
-    def to_f(filename=nil,mode='w')
+    def to_f(filename = nil, mode = 'w')
       filename ||= 'out.pcap'
-      mode = mode.to_s[0,1] + "b"
+      mode = mode.to_s[0, 1] + "b"
       raise ArgumentError, "Unknown mode: #{mode.to_s}" unless mode =~ /^[wa]/
-      if(mode == 'w' || !(File.exist?(filename)))
-        data = [PcapHeader.new, self.to_pcap].map {|x| x.to_s}.join
+
+      if (mode == 'w' || !(File.exist?(filename)))
+        data = [PcapHeader.new, self.to_pcap].map { |x| x.to_s }.join
       else
         data = self.to_pcap
       end
-      File.open(filename, mode) {|f| f.write data}
+      File.open(filename, mode) { |f| f.write data }
       return [filename, 1, data.size]
     end
 
     # Put the entire packet on the wire by creating a temporary PacketFu::Inject object.
     # TODO: Do something with auto-checksumming?
-    def to_w(iface=nil)
+    def to_w(iface = nil)
       iface = (iface || self.iface || PacketFu::Config.new.config[:iface]).to_s
       inj = PacketFu::Inject.new(:iface => iface)
       inj.array = [@headers[0].to_s]
@@ -116,7 +115,7 @@ module PacketFu
     # Recalculates all the calcuated fields for all headers in the packet.
     # This is important since read() wipes out all the calculated fields
     # such as length and checksum and what all.
-    def recalc(arg=:all)
+    def recalc(arg = :all)
       case arg
       when :ip
         ip_recalc(:all)
@@ -163,8 +162,9 @@ module PacketFu
     # to be transmuted into a packet, as well as args. This superclass method is merely
     # concerned with handling args common to many packet formats (namely, fixing packets
     # on the fly)
-    def read(str=nil, args={})
+    def read(str = nil, args = {})
       raise "Cannot parse `#{str}'" unless self.class.can_parse?(str)
+
       @eth_header.read(str)
       if args[:fix] || args[:recalc]
         ip_recalc(:ip_sum) if self.is_ip?
@@ -199,14 +199,15 @@ module PacketFu
     def ==(other)
       return false unless other.kind_of? self.class
       return false unless other.respond_to? :to_s
+
       self.to_s == other.to_s
     end
 
     # Peek provides summary data on packet contents.
     #
     # Each packet type should provide a peek_format.
-    def peek(args={})
-      idx = @headers.reverse.map {|h| h.respond_to? peek_format}.index(true)
+    def peek(args = {})
+      idx = @headers.reverse.map { |h| h.respond_to? peek_format }.index(true)
       if idx
         @headers.reverse[idx].peek_format
       else
@@ -240,7 +241,7 @@ module PacketFu
     def peek_format
       peek_data = ["?  "]
       peek_data << "%-5d" % self.to_s.size
-      peek_data << "%68s" % self.to_s[0,34].unpack("H*")[0]
+      peek_data << "%68s" % self.to_s[0, 34].unpack("H*")[0]
       peek_data.join
     end
 
@@ -298,10 +299,10 @@ module PacketFu
       str.force_encoding(Encoding::BINARY) if str.respond_to? :force_encoding
       hexascii_lines = str.to_s.unpack("H*")[0].scan(/.{1,32}/)
       regex = Regexp.new('[\x00-\x1f\x7f-\xff]'.force_encoding('ASCII-8BIT'), Regexp::NOENCODING)
-      chars = str.to_s.gsub(regex,'.')
+      chars = str.to_s.gsub(regex, '.')
       chars_lines = chars.scan(/.{1,16}/)
       ret = []
-      hexascii_lines.size.times {|i| ret << "%-48s  %s" % [hexascii_lines[i].gsub(/(.{2})/,"\\1 "),chars_lines[i]]}
+      hexascii_lines.size.times { |i| ret << "%-48s  %s" % [hexascii_lines[i].gsub(/(.{2})/, "\\1 "), chars_lines[i]] }
       ret.join("\n")
     end
 
@@ -316,7 +317,7 @@ module PacketFu
     # longer, but more readable, dissection of the packet. This is the default.
     #
     # TODO: Have an option for colors. Everyone loves colorized irb output.
-    def inspect_hex(arg=0)
+    def inspect_hex(arg = 0)
       case arg
       when :layers
         ret = []
@@ -337,12 +338,13 @@ module PacketFu
 
     def dissection_table
       table = []
-      @headers.each_with_index do |header,table_idx|
-        proto = header.class.name.sub(/^.*::/,"")
-        table << [proto,[]]
+      @headers.each_with_index do |header, table_idx|
+        proto = header.class.name.sub(/^.*::/, "")
+        table << [proto, []]
         header.class.members.each do |elem|
           elem_sym = elem.to_sym # to_sym needed for 1.8
           next if elem_sym == :body
+
           elem_type_value = []
           elem_type_value[0] = elem
           readable_element = "#{elem}_readable"
@@ -356,7 +358,7 @@ module PacketFu
         end
       end
       table
-      if @headers.last.members.map {|x| x.to_sym }.include? :body
+      if @headers.last.members.map { |x| x.to_sym }.include? :body
         body_part = [:body, self.payload, @headers.last.body.class.name]
       end
       table << body_part
@@ -374,16 +376,16 @@ module PacketFu
         body = dtable.pop
         hex_body = hexify(body[1])
       end
-      elem_widths = [0,0,0]
+      elem_widths = [0, 0, 0]
       dtable.each do |proto_table|
         proto_table[1].each do |elems|
-          elems.each_with_index do |e,i|
+          elems.each_with_index do |e, i|
             width = e.size
             elem_widths[i] = width if width > elem_widths[i]
           end
         end
       end
-      total_width = elem_widths.inject(0) {|sum,x| sum+x}
+      total_width = elem_widths.inject(0) { |sum, x| sum + x }
       table = ""
       dtable.each do |proto|
         table << "--"
@@ -419,7 +421,8 @@ module PacketFu
 
     def kind_of?(klass)
       return true if orig_kind_of? klass
-      packet_types = proto.map {|p| PacketFu.const_get("#{p}Packet")}
+
+      packet_types = proto.map { |p| PacketFu.const_get("#{p}Packet") }
       match = false
       packet_types.each do |p|
         if p.ancestors.include? klass
@@ -464,7 +467,7 @@ module PacketFu
     #
     def proto
       type_array = []
-      self.headers.each {|header| type_array << header.class.to_s.split('::').last.gsub(/Header$/,'')}
+      self.headers.each { |header| type_array << header.class.to_s.split('::').last.gsub(/Header$/, '') }
       type_array
     end
 
@@ -474,17 +477,18 @@ module PacketFu
     # the Packet class should not be instantiated directly, since it's an
     # abstract class that real packet types inherit from. Sadly, this
     # makes the Packet class more difficult to test directly.
-    def initialize(args={})
+    def initialize(args = {})
       if self.class.name =~ /(::|^)PacketFu::Packet$/
         raise NoMethodError, "method `new' called for abstract class #{self.class.name}"
       end
+
       @inspect_style = args[:inspect_style] || PacketFu.inspect_style || :dissect
       if args[:config]
-        args[:config].each_pair do |k,v|
+        args[:config].each_pair do |k, v|
           case k
-          when :eth_daddr; @eth_header.eth_daddr=v if @eth_header
-          when :eth_saddr; @eth_header.eth_saddr=v if @eth_header
-          when :ip_saddr; @ip_header.ip_saddr=v		 if @ip_header
+          when :eth_daddr; @eth_header.eth_daddr = v if @eth_header
+          when :eth_saddr; @eth_header.eth_saddr = v if @eth_header
+          when :ip_saddr; @ip_header.ip_saddr = v if @ip_header
           when :iface; @iface = v
           end
         end
@@ -498,11 +502,11 @@ module PacketFu
       PacketFu.inspect_style(arg)
     end
 
-    #method_missing() delegates protocol-specific field actions to the apporpraite
-    #class variable (which contains the associated packet type)
-    #This register-of-protocols style switch will work for the
-    #forseeable future (there aren't /that/ many packet types), and it's a handy
-    #way to know at a glance what packet types are supported.
+    # method_missing() delegates protocol-specific field actions to the apporpraite
+    # class variable (which contains the associated packet type)
+    # This register-of-protocols style switch will work for the
+    # forseeable future (there aren't /that/ many packet types), and it's a handy
+    # way to know at a glance what packet types are supported.
     def method_missing(sym, *args, &block)
       case sym.to_s
       when /^is_([a-zA-Z0-9]+)\?/
@@ -515,7 +519,7 @@ module PacketFu
       when /^([a-zA-Z0-9]+)_.+/
         ptype = $1
         if PacketFu.packet_prefixes.index(ptype)
-          self.instance_variable_get("@#{ptype}_header").send(sym,*args, &block)
+          self.instance_variable_get("@#{ptype}_header").send(sym, *args, &block)
         else
           super
         end
@@ -537,7 +541,6 @@ module PacketFu
         super
       end
     end
-
   end # class Packet
 end
 

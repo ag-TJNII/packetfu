@@ -30,7 +30,7 @@ describe StructFu::Int, "basic Int class" do
   end
 
   it "should raise when to_s'ed directly" do
-    expect{ @int.to_s}.to raise_error(StandardError, "StructFu::Int#to_s accessed, must be redefined.")
+    expect { @int.to_s }.to raise_error(StandardError, "StructFu::Int#to_s accessed, must be redefined.")
   end
 
   it "should have a value of 8" do
@@ -46,7 +46,6 @@ describe StructFu::Int, "basic Int class" do
 end
 
 describe StructFu::Int8, "one byte value" do
-
   before :each do
     @int = StructFu::Int8.new(11)
   end
@@ -78,7 +77,6 @@ describe StructFu::Int8, "one byte value" do
     expect(@int.to_i).to eql(254)
     expect(@int.to_s).to eql("\xfe".force_encoding("binary"))
   end
-
 end
 
 describe StructFu::Int16, "two byte value" do
@@ -115,10 +113,10 @@ describe StructFu::Int16, "two byte value" do
   end
 
   it "should be able to set endianness" do
-    int_be = StructFu::Int16.new(11,:big)
+    int_be = StructFu::Int16.new(11, :big)
     expect(int_be.to_s).to eql("\x00\x0b")
 
-    int_le = StructFu::Int16.new(11,:little)
+    int_le = StructFu::Int16.new(11, :little)
     expect(int_le.to_s).to eql("\x0b\x00")
   end
 
@@ -135,7 +133,6 @@ describe StructFu::Int16, "two byte value" do
 end
 
 describe StructFu::Int16le, "2 byte little-endian value" do
-
   before :each do
     @int = StructFu::Int16le.new(11)
   end
@@ -148,11 +145,9 @@ describe StructFu::Int16le, "2 byte little-endian value" do
     expect { @int.endian = :big }.to raise_error(NoMethodError, /undefined method `endian='/)
     expect { @int.endian = :little }.to raise_error(NoMethodError, /undefined method `endian='/)
   end
-
 end
 
 describe StructFu::Int16be, "2 byte big-endian value" do
-
   before :each do
     @int = StructFu::Int16be.new(11)
   end
@@ -165,11 +160,9 @@ describe StructFu::Int16be, "2 byte big-endian value" do
     expect { @int.endian = :big }.to raise_error(NoMethodError, /undefined method `endian='/)
     expect { @int.endian = :little }.to raise_error(NoMethodError, /undefined method `endian='/)
   end
-
 end
 
 describe StructFu::Int32, "four byte value" do
-
   before :each do
     @int = StructFu::Int32.new(11)
   end
@@ -203,10 +196,10 @@ describe StructFu::Int32, "four byte value" do
   end
 
   it "should be able to set endianness" do
-    int_be = StructFu::Int32.new(11,:big)
+    int_be = StructFu::Int32.new(11, :big)
     expect(int_be.to_s).to eql("\x00\x00\x00\x0b")
-    
-    int_le = StructFu::Int32.new(11,:little)
+
+    int_le = StructFu::Int32.new(11, :little)
     expect(int_le.to_s).to eql("\x0b\x00\x00\x00")
   end
 
@@ -216,15 +209,13 @@ describe StructFu::Int32, "four byte value" do
 
     @int.endian = :little
     expect(@int.endian).to eql(:little)
-    
+
     @int.read(11)
     expect(@int.to_s).to eql("\x0b\x00\x00\x00")
   end
-
 end
 
 describe StructFu::Int32le, "4 byte little-endian value" do
-
   before :each do
     @int = StructFu::Int32le.new(11)
   end
@@ -237,11 +228,9 @@ describe StructFu::Int32le, "4 byte little-endian value" do
     expect { @int.endian = :big }.to raise_error(NoMethodError, /undefined method `endian='/)
     expect { @int.endian = :little }.to raise_error(NoMethodError, /undefined method `endian='/)
   end
-
 end
 
 describe StructFu::Int32be, "4 byte big-endian value" do
-
   before :each do
     @int = StructFu::Int32be.new(11)
   end
@@ -254,11 +243,9 @@ describe StructFu::Int32be, "4 byte big-endian value" do
     expect { @int.endian = :big }.to raise_error(NoMethodError, /undefined method `endian='/)
     expect { @int.endian = :little }.to raise_error(NoMethodError, /undefined method `endian='/)
   end
-
 end
 
 describe StructFu::String, "a sligtly more special String" do
-
   before :each do
     @str = StructFu::String.new("Oi, a string")
   end
@@ -275,11 +262,9 @@ describe StructFu::String, "a sligtly more special String" do
     @str.read("hello")
     expect(@str).to eql("hello")
   end
-
 end
 
 describe StructFu::IntString do
-
   it "should be" do
     StructFu::IntString.should be
   end
@@ -290,17 +275,17 @@ describe StructFu::IntString do
   end
 
   it "should have a 16-bit length and a value" do
-    istr = StructFu::IntString.new("Avast!",StructFu::Int16)
+    istr = StructFu::IntString.new("Avast!", StructFu::Int16)
     expect(istr.to_s).to eql("\x00\x06Avast!")
   end
 
   it "should have a 32-bit length and a value" do
-    istr = StructFu::IntString.new("Avast!",StructFu::Int32)
+    istr = StructFu::IntString.new("Avast!", StructFu::Int32)
     expect(istr.to_s).to eql("\x00\x00\x00\x06Avast!")
   end
 
   before :each do
-    @istr = StructFu::IntString.new("Avast!",StructFu::Int32)
+    @istr = StructFu::IntString.new("Avast!", StructFu::Int32)
   end
 
   it "should report the correct length with a new string" do
@@ -333,6 +318,6 @@ describe StructFu::IntString do
 
   it "should raise when a string is too short" do
     data = "\x01A"
-    expect{ @istr.read(data) }.to raise_error(StandardError, "String is too short for type StructFu::Int32")
+    expect { @istr.read(data) }.to raise_error(StandardError, "String is too short for type StructFu::Int32")
   end
 end

@@ -9,7 +9,6 @@ require 'packetfu/protos/icmp'
 require 'fake_packets'
 
 describe PacketFu::Packet, "abstract packet class behavior" do
-
   before(:all) do
     add_fake_packets
   end
@@ -28,8 +27,8 @@ describe PacketFu::Packet, "abstract packet class behavior" do
   end
 
   it "should register packet classes with PacketFu" do
-    PacketFu.packet_classes {should include(FooPacket) }
-    PacketFu.packet_classes {should include(BarPacket) }
+    PacketFu.packet_classes { should include(FooPacket) }
+    PacketFu.packet_classes { should include(BarPacket) }
   end
 
   it "should disallow badly named subclasses" do
@@ -38,7 +37,7 @@ describe PacketFu::Packet, "abstract packet class behavior" do
       end
     }.to raise_error(RuntimeError, "Packet classes should be named 'ProtoPacket'")
     PacketFu.packet_classes.include?(PacketFu::PacketNot).should be false
-    PacketFu.packet_classes {should_not include(PacketNot) }
+    PacketFu.packet_classes { should_not include(PacketNot) }
   end
 
   before(:each) do
@@ -95,5 +94,4 @@ describe PacketFu::Packet, "abstract packet class behavior" do
     packet.should be_a(PacketFu::UDPPacket)
     packet.headers[1].should be_a(PacketFu::IPv6Header)
   end
-
 end

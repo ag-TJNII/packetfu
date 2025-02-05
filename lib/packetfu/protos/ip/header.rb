@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 require 'ipaddr'
 
 module PacketFu
@@ -11,7 +12,7 @@ module PacketFu
     include StructFu
 
     IPV4_RE = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/
-    def initialize(args={})
+    def initialize(args = {})
       super(
       Int32.new(args[:ip_addr]))
     end
@@ -25,7 +26,8 @@ module PacketFu
     def read(str)
       force_binary(str)
       return self if str.nil?
-      self[:ip_addr].read str[0,4]
+
+      self[:ip_addr].read str[0, 4]
       self
     end
 
@@ -47,10 +49,11 @@ module PacketFu
       if match.nil?
         raise ArgumentError.new("str is not a valid IPV4 address")
       end
-        a = match[1].to_i
-        b = match[2].to_i
-        c = match[3].to_i
-        d = match[4].to_i
+
+      a = match[1].to_i
+      b = match[2].to_i
+      c = match[3].to_i
+      d = match[4].to_i
       unless (a >= 0 && a <= 255 &&
               b >= 0 && b <= 255 &&
               c >= 0 && c <= 255 &&
@@ -58,7 +61,7 @@ module PacketFu
         raise ArgumentError.new("str is not a valid IPV4 address")
       end
 
-      self[:ip_addr].value = (a<<24) + (b<<16) + (c<<8) + d
+      self[:ip_addr].value = (a << 24) + (b << 16) + (c << 8) + d
       self
     end
 
@@ -92,7 +95,6 @@ module PacketFu
     def o4
       self.to_i & 0xff
     end
-
   end
 
   # IPHeader is a complete IP struct, used in IPPacket. Most traffic on most networks today is IP-based.
@@ -122,7 +124,7 @@ module PacketFu
                               :ip_sum, :ip_src, :ip_dst, :body)
     include StructFu
 
-    def initialize(args={})
+    def initialize(args = {})
       @random_id = rand(0xffff)
       super(
         (args[:ip_v] || 4),
@@ -143,64 +145,83 @@ module PacketFu
     # Returns the object in string form.
     def to_s
       byte_v_hl = [(self.ip_v << 4) + self.ip_hl].pack("C")
-      byte_v_hl + (self.to_a[2,10].map {|x| x.to_s}.join)
+      byte_v_hl + (self.to_a[2, 10].map { |x| x.to_s }.join)
     end
 
     # Reads a string to populate the object.
     def read(str)
       force_binary(str)
       return self if str.nil?
-      self[:ip_v] = str[0,1].unpack("C").first >> 4
-      self[:ip_hl] = str[0,1].unpack("C").first.to_i & 0x0f
-      self[:ip_tos].read(str[1,1])
-      self[:ip_len].read(str[2,2])
-      self[:ip_id].read(str[4,2])
-      self[:ip_frag].read(str[6,2])
-      self[:ip_ttl].read(str[8,1])
-      self[:ip_proto].read(str[9,1])
-      self[:ip_sum].read(str[10,2])
-      self[:ip_src].read(str[12,4])
-      self[:ip_dst].read(str[16,4])
-      self[:body].read(str[20,str.size]) if str.size > 20
+
+      self[:ip_v] = str[0, 1].unpack("C").first >> 4
+      self[:ip_hl] = str[0, 1].unpack("C").first.to_i & 0x0f
+      self[:ip_tos].read(str[1, 1])
+      self[:ip_len].read(str[2, 2])
+      self[:ip_id].read(str[4, 2])
+      self[:ip_frag].read(str[6, 2])
+      self[:ip_ttl].read(str[8, 1])
+      self[:ip_proto].read(str[9, 1])
+      self[:ip_sum].read(str[10, 2])
+      self[:ip_src].read(str[12, 4])
+      self[:ip_dst].read(str[16, 4])
+      self[:body].read(str[20, str.size]) if str.size > 20
       self
     end
 
     # Setter for the version.
     def ip_v=(i); self[:ip_v] = i.to_i; end
+
     # Getter for the version.
     def ip_v; self[:ip_v].to_i; end
+
     # Setter for the header length (divide by 4)
     def ip_hl=(i); self[:ip_hl] = i.to_i; end
+
     # Getter for the header length (multiply by 4)
     def ip_hl; self[:ip_hl].to_i; end
+
     # Setter for the differentiated services
     def ip_tos=(i); typecast i; end
+
     # Getter for the differentiated services
     def ip_tos; self[:ip_tos].to_i; end
+
     # Setter for total length.
     def ip_len=(i); typecast i; end
+
     # Getter for total length.
     def ip_len; self[:ip_len].to_i; end
+
     # Setter for the identication number.
     def ip_id=(i); typecast i; end
+
     # Getter for the identication number.
     def ip_id; self[:ip_id].to_i; end
+
     # Setter for the fragmentation ID.
     def ip_frag=(i); typecast i; end
+
     # Getter for the fragmentation ID.
     def ip_frag; self[:ip_frag].to_i; end
+
     # Setter for the time to live.
     def ip_ttl=(i); typecast i; end
+
     # Getter for the time to live.
     def ip_ttl; self[:ip_ttl].to_i; end
+
     # Setter for the protocol number.
     def ip_proto=(i); typecast i; end
+
     # Getter for the protocol number.
     def ip_proto; self[:ip_proto].to_i; end
+
     # Setter for the checksum.
     def ip_sum=(i); typecast i; end
+
     # Getter for the checksum.
     def ip_sum; self[:ip_sum].to_i; end
+
     # Setter for the source IP address.
     def ip_src=(i)
       case i
@@ -212,8 +233,10 @@ module PacketFu
         typecast i
       end
     end
+
     # Getter for the source IP address.
     def ip_src; self[:ip_src].to_i; end
+
     # Setter for the destination IP address.
     def ip_dst=(i)
       case i
@@ -225,6 +248,7 @@ module PacketFu
         typecast i
       end
     end
+
     # Getter for the destination IP address.
     def ip_dst; self[:ip_dst].to_i; end
 
@@ -241,7 +265,7 @@ module PacketFu
     # Calculate the true checksum of the packet.
     # (Yes, this is the long way to do it, but it's e-z-2-read for mathtards like me.)
     def ip_calc_sum
-      checksum =  (((self.ip_v  <<  4) + self.ip_hl) << 8) + self.ip_tos
+      checksum =  (((self.ip_v << 4) + self.ip_hl) << 8) + self.ip_tos
       checksum += self.ip_len
       checksum +=	self.ip_id
       checksum += self.ip_frag
@@ -285,7 +309,7 @@ module PacketFu
     # Translate various formats of IPv4 Addresses to an array of digits.
     def self.octet_array(addr)
       if addr.class == String
-        oa = addr.split('.').collect {|x| x.to_i}
+        oa = addr.split('.').collect { |x| x.to_i }
       elsif addr.kind_of? Integer
         oa = IPAddr.new(addr, Socket::AF_INET).to_s.split('.')
       elsif addr.kind_of? Array
@@ -300,18 +324,18 @@ module PacketFu
     #   :ip_len
     #   :ip_sum
     #   :ip_id
-    def ip_recalc(arg=:all)
+    def ip_recalc(arg = :all)
       case arg
       when :ip_len
-        self.ip_len=ip_calc_len
+        self.ip_len = ip_calc_len
       when :ip_sum
-        self.ip_sum=ip_calc_sum
+        self.ip_sum = ip_calc_sum
       when :ip_id
         @random_id = rand(0xffff)
       when :all
-        self.ip_id=		ip_calc_id
-        self.ip_len=	ip_calc_len
-        self.ip_sum=	ip_calc_sum
+        self.ip_id = ip_calc_id
+        self.ip_len = ip_calc_len
+        self.ip_sum = ip_calc_sum
       else
         raise ArgumentError, "No such field `#{arg}'"
       end
@@ -329,6 +353,5 @@ module PacketFu
     def ip_sum_readable
       "0x%04x" % ip_sum
     end
-
   end
 end

@@ -2,7 +2,6 @@ require 'stringio'
 
 module PacketFu
   module PcapNG
-
     # PcapngSHB represents a Section Header Block (SHB) of a pcapng file.
     #
     # == PcapngSHB Definition
@@ -27,10 +26,10 @@ module PacketFu
       MAGIC_LITTLE = [MAGIC_INT32].pack('V')
       MAGIC_BIG    = [MAGIC_INT32].pack('N')
 
-      MIN_SIZE     = 7*4
+      MIN_SIZE = 7 * 4
       SECTION_LEN_UNDEFINED = 0xffffffff_ffffffff
 
-      def initialize(args={})
+      def initialize(args = {})
         @endian = set_endianness(args[:endian] || :little)
         @interfaces = []
         @unknown_blocks = []
@@ -40,8 +39,8 @@ module PacketFu
       end
 
       # Used by #initialize to set the initial fields
-      def init_fields(args={})
-        args[:type]  = @int32.new(args[:type] || PcapNG::SHB_TYPE.to_i)
+      def init_fields(args = {})
+        args[:type] = @int32.new(args[:type] || PcapNG::SHB_TYPE.to_i)
         args[:block_len] = @int32.new(args[:block_len] || MIN_SIZE)
         args[:magic] = @int32.new(args[:magic] || MAGIC_INT32)
         args[:ver_major] = @int16.new(args[:ver_major] || 1)
@@ -125,13 +124,12 @@ module PacketFu
         to_a.map(&:to_s).join + body
       end
 
-
       private
 
       def force_endianness(endian)
         set_endianness endian
         @endian = endian
-        self[:type]  = @int32.new(self[:type].to_i)
+        self[:type] = @int32.new(self[:type].to_i)
         self[:block_len] = @int32.new(self[:block_len].to_i)
         self[:magic] = @int32.new(self[:magic].to_i)
         self[:ver_major] = @int16.new(self[:ver_major].to_i)
@@ -139,8 +137,6 @@ module PacketFu
         self[:section_len] = @int64.new(self[:section_len].to_i)
         self[:block_len2] = @int32.new(self[:block_len2].to_i)
       end
-
     end
-
   end
 end

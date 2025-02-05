@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 require 'spec_helper'
 require 'packetfu/protos/eth'
 require 'packetfu/protos/ip'
@@ -72,7 +73,7 @@ describe Inject do
         udp_packet.udp_sport = 12345
         udp_packet.payload = "PacketFu test packet"
         udp_packet.recalc
-        
+
         expect(udp_packet.to_w).to eql([1, 1, 62])
       end
 
@@ -85,11 +86,11 @@ describe Inject do
         udp_packet.udp_sport = 12345
         udp_packet.payload = "PacketFu test packet"
         udp_packet.recalc
-        3.times { packet_array << udp_packet.to_s}
-        
+        3.times { packet_array << udp_packet.to_s }
+
         inject = PacketFu::Inject.new(:iface => PacketFu::Utils::default_int)
         expect(inject.array_to_wire(:array => packet_array)).to eql([3, 3, 186])
       end
     end
-  end 
+  end
 end

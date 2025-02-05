@@ -2,7 +2,6 @@ require 'stringio'
 
 module PacketFu
   module PcapNG
-
     # Pcapng::SPB represents a Section Simple Packet Block (SPB) of a pcapng file.
     #
     # == Pcapng::SPB Definition
@@ -17,9 +16,9 @@ module PacketFu
       attr_accessor :endian
       attr_accessor :interface
 
-      MIN_SIZE     = 4*4
+      MIN_SIZE = 4 * 4
 
-      def initialize(args={})
+      def initialize(args = {})
         @endian = set_endianness(args[:endian] || :little)
         init_fields(args)
         super(args[:type], args[:block_len], args[:orig_len], args[:data],
@@ -27,8 +26,8 @@ module PacketFu
       end
 
       # Used by #initialize to set the initial fields
-      def init_fields(args={})
-        args[:type]  = @int32.new(args[:type] || PcapNG::SPB_TYPE.to_i)
+      def init_fields(args = {})
+        args[:type] = @int32.new(args[:type] || PcapNG::SPB_TYPE.to_i)
         args[:block_len] = @int32.new(args[:block_len] || MIN_SIZE)
         args[:orig_len] = @int32.new(args[:orig_len] || 0)
         args[:data] = StructFu::String.new(args[:data] || '')
@@ -76,8 +75,6 @@ module PacketFu
         recalc_block_len
         to_a.map(&:to_s).join
       end
-
     end
-
   end
 end

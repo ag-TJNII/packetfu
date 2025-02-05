@@ -9,7 +9,7 @@ describe PacketFu, "version information" do
   it "reports a version number" do
     PacketFu::VERSION.should match /^[0123]\.[0-9]+\.[0-9]+(.pre)?$/
   end
-  its(:version) {should eq PacketFu::VERSION}
+  its(:version) { should eq PacketFu::VERSION }
 
   it "can compare version strings" do
     PacketFu.binarize_version("1.2.3").should == 0x010203
@@ -59,19 +59,18 @@ describe PacketFu, "protocol requires" do
 end
 
 describe PacketFu, "packet class list management" do
-
   it "should allow packet class registration" do
     PacketFu.add_packet_class(PacketFu::FooPacket).should be_kind_of Array
     PacketFu.add_packet_class(PacketFu::BarPacket).should be_kind_of Array
   end
 
-  its(:packet_classes) {should include(PacketFu::FooPacket)}
+  its(:packet_classes) { should include(PacketFu::FooPacket) }
 
   it "should disallow non-classes as packet classes" do
     expect { PacketFu.add_packet_class("A String") }.to raise_error(RuntimeError, "Need a class")
   end
 
-  its(:packet_prefixes) {should include("bar")}
+  its(:packet_prefixes) { should include("bar") }
 
   # Don't really have much utility for this right now.
   it "should allow packet class deregistration" do
@@ -79,5 +78,4 @@ describe PacketFu, "packet class list management" do
     PacketFu.packet_prefixes.should_not include("bar")
     PacketFu.add_packet_class(PacketFu::BarPacket)
   end
-
 end

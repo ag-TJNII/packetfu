@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 require 'packetfu/protos/eth/header'
 require 'packetfu/protos/eth/mixin'
 
@@ -50,16 +51,17 @@ module PacketFu
       return false unless EthPacket.can_parse? str
       return false unless IPPacket.can_parse? str
       return false unless UDPPacket.can_parse? str
+
       temp_packet = UDPPacket.new
       temp_packet.read(str)
-      if temp_packet.ip_ttl == 1 and [temp_packet.udp_sport,temp_packet.udp_dport] == [1985,1985] 
+      if temp_packet.ip_ttl == 1 and [temp_packet.udp_sport, temp_packet.udp_dport] == [1985, 1985]
         return true
-      else 
+      else
         return false
       end
     end
 
-    def initialize(args={})
+    def initialize(args = {})
       @eth_header = EthHeader.new(args).read(args[:eth])
       @ip_header = IPHeader.new(args).read(args[:ip])
       @ip_header.ip_proto = 0x11
@@ -82,9 +84,7 @@ module PacketFu
       peek_data << "%-15s" % self.ip_saddr
       peek_data.join
     end
-
   end
-
 end
 
 # vim: nowrap sw=2 sts=0 ts=2 ff=unix ft=ruby

@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 require 'packetfu/protos/eth/header'
 require 'packetfu/protos/eth/mixin'
 
@@ -62,27 +63,28 @@ module PacketFu
     def self.can_parse?(str)
       return false unless str.size >= 54
       return false unless EthPacket.can_parse? str
+
       if IPPacket.can_parse? str
-        return true if str[23,1] == "\x06"
+        return true if str[23, 1] == "\x06"
       elsif IPv6Packet.can_parse? str
-        return true if str[20,1] == "\x06"
+        return true if str[20, 1] == "\x06"
       end
       return false
     end
 
-    def read(str=nil, args={})
+    def read(str = nil, args = {})
       super
       # Strip off any extra data, if we are asked to do so.
       if args[:strip]
         tcp_body_len = self.ip_len - self.ip_hlen - (self.tcp_hlen * 4)
-        @tcp_header.body.read(@tcp_header.body.to_s[0,tcp_body_len])
+        @tcp_header.body.read(@tcp_header.body.to_s[0, tcp_body_len])
         tcp_calc_sum
         @ip_header.ip_recalc
       end
       self
     end
 
-    def initialize(args={})
+    def initialize(args = {})
       if args[:on_ipv6] or args[:ipv6]
         @eth_header = EthHeader.new(args.merge(:eth_proto => 0x86dd)).read(args[:eth])
         @ipv6_header = IPv6Header.new(args).read(args[:ipv6])
@@ -122,20 +124,20 @@ module PacketFu
       case @tcp_header.flavor = str.to_s.downcase
       when "windows" # WinXP's default syn
         @tcp_header.tcp_win = 0x4000
-        @tcp_header.tcp_options="MSS:1460,NOP,NOP,SACKOK"
+        @tcp_header.tcp_options = "MSS:1460,NOP,NOP,SACKOK"
         @tcp_header.tcp_src = rand(5000 - 1026) + 1026
         @ip_header.ip_ttl = 64
       when "linux" # Ubuntu Linux 2.6.24-19-generic default syn
         @tcp_header.tcp_win = 5840
-        @tcp_header.tcp_options="MSS:1460,SACKOK,TS:#{ts_val};0,NOP,WS:7"
+        @tcp_header.tcp_options = "MSS:1460,SACKOK,TS:#{ts_val};0,NOP,WS:7"
         @tcp_header.tcp_src = rand(61_000 - 32_000) + 32_000
         @ip_header.ip_ttl = 64
       when "freebsd" # Freebsd
         @tcp_header.tcp_win = 0xffff
-        @tcp_header.tcp_options="MSS:1460,NOP,WS:3,NOP,NOP,TS:#{ts_val};#{ts_sec},SACKOK,EOL,EOL"
+        @tcp_header.tcp_options = "MSS:1460,NOP,WS:3,NOP,NOP,TS:#{ts_val};#{ts_sec},SACKOK,EOL,EOL"
         @ip_header.ip_ttl = 64
       else
-        @tcp_header.tcp_options="MSS:1460,NOP,NOP,SACKOK"
+        @tcp_header.tcp_options = "MSS:1460,NOP,NOP,SACKOK"
       end
       tcp_calc_sum
     end
@@ -163,23 +165,23 @@ module PacketFu
       checksum += (tcp_seq.to_i & 0xffff)
       checksum += (tcp_ack.to_i >> 16)
       checksum += (tcp_ack.to_i & 0xffff)
-      checksum += ((tcp_hlen << 12) + 
-                   (tcp_reserved << 9) + 
-                   (tcp_ecn.to_i << 6) + 
+      checksum += ((tcp_hlen << 12) +
+                   (tcp_reserved << 9) +
+                   (tcp_ecn.to_i << 6) +
                    tcp_flags.to_i
                   )
       checksum += tcp_win
       checksum += tcp_urg
 
-      chk_tcp_opts = (tcp_opts.to_s.size % 2 == 0 ? tcp_opts.to_s : tcp_opts.to_s + "\x00") 
-      chk_tcp_opts.unpack("n*").each {|x| checksum = checksum + x }
+      chk_tcp_opts = (tcp_opts.to_s.size % 2 == 0 ? tcp_opts.to_s : tcp_opts.to_s + "\x00")
+      chk_tcp_opts.unpack("n*").each { |x| checksum = checksum + x }
       if (tcp_len - (tcp_hlen * 4)) >= 0
         real_tcp_payload = payload[0, (tcp_len - (tcp_hlen * 4))] # Can't forget those pesky FCSes!
       else
         real_tcp_payload = payload # Something's amiss here so don't bother figuring out where the real payload is.
       end
       chk_payload = (real_tcp_payload.size % 2 == 0 ? real_tcp_payload : real_tcp_payload + "\x00") # Null pad if it's odd.
-      chk_payload.unpack("n*").each {|x| checksum = checksum+x }
+      chk_payload.unpack("n*").each { |x| checksum = checksum + x }
       checksum = checksum % 0xffff
       checksum = 0xffff - checksum
       checksum == 0 ? 0xffff : checksum
@@ -196,7 +198,7 @@ module PacketFu
     #     Recomputes the TCP checksum.
     #   :tcp_hlen
     #     Recomputes the TCP header length. Useful after options are added.
-    def tcp_recalc(arg=:all)
+    def tcp_recalc(arg = :all)
       case arg
       when :tcp_sum
         tcp_calc_sum
@@ -239,7 +241,5 @@ module PacketFu
       end
       peek_data.join
     end
-
   end
-
 end

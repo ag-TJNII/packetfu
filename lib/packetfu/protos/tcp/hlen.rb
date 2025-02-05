@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 module PacketFu
   # Implements the Header Length for TCPHeader.
   #
@@ -6,10 +7,9 @@ module PacketFu
   #
   #   Integer(4 bits)  :hlen
   class TcpHlen < Struct.new(:hlen)
-    
     include StructFu
 
-    def initialize(args={})
+    def initialize(args = {})
       super(args[:hlen])
     end
 
@@ -24,6 +24,7 @@ module PacketFu
     def read(str)
       force_binary(str)
       return self if str.nil? || str.size.zero?
+
       if 1.respond_to? :ord
         self[:hlen] = (str[0].ord & 0b11110000) >> 4
       else
@@ -36,6 +37,5 @@ module PacketFu
     def to_s
       [self.to_i].pack("C")
     end
-
   end
 end

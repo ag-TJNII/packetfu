@@ -1,6 +1,6 @@
 # -*- coding: binary -*-
-module PacketFu
 
+module PacketFu
   # The Inject class handles injecting arrays of binary data on the wire.
   #
   # To inject single packets, use PacketFu::Packet.to_w() instead.
@@ -8,10 +8,10 @@ module PacketFu
     attr_accessor :array, :stream, :show_live # Leave these public and open.
     attr_reader :iface, :snaplen, :promisc, :timeout # Cant change after the init.
 
-    def initialize(args={})
+    def initialize(args = {})
       @array = [] # Where the packet array goes.
       @stream = [] # Where the stream goes.
-      @iface = args[:iface] || ENV['IFACE'] || PacketFu::Utils.default_int || "lo" 
+      @iface = args[:iface] || ENV['IFACE'] || PacketFu::Utils.default_int || "lo"
       @snaplen = args[:snaplen] || 0xffff
       @promisc = args[:promisc] || false # Sensible for some Intel wifi cards
       @timeout = args[:timeout] || 1
@@ -35,17 +35,17 @@ module PacketFu
     #  inj = PacketFu::Inject.new
     #  inj.array_to_wire(:array => [pkt1, pkt2, pkt3], :sleep => 0.1)
     #
-    def array_to_wire(args={})
+    def array_to_wire(args = {})
       pkt_array = args[:array] || args[:arr] || @array
       interval = args[:int] || args[:sleep]
       show_live = args[:show_live] || args[:live] || @show_live
 
-      @stream = Pcap.open_live(@iface,@snaplen,@promisc,@timeout)
+      @stream = Pcap.open_live(@iface, @snaplen, @promisc, @timeout)
       pkt_count = 0
       pkt_array.each do |pkt|
         @stream.inject(pkt)
         sleep interval if interval
-        pkt_count +=1
+        pkt_count += 1
         puts "Sent Packet \##{pkt_count} (#{pkt.size})" if show_live
       end
       # Return # of packets sent, array size, and array total size
@@ -53,14 +53,13 @@ module PacketFu
     end
 
     # Equivalent to array_to_wire
-    def a2w(args={})
+    def a2w(args = {})
       array_to_wire(args)
     end
 
     # Equivalent to array_to_wire
-    def inject(args={})
+    def inject(args = {})
       array_to_wire(args)
     end
-
   end
 end

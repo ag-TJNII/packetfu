@@ -2,7 +2,6 @@ require_relative 'shb'
 
 module PacketFu
   module PcapNG
-
     # PcapNG::File is a complete Pcap-NG file handler.
     class File
       attr_accessor :sections
@@ -112,7 +111,7 @@ module PacketFu
       #  * :keep_timestamps    If true, generates an array of hashes, each one with
       #                        timestamp as key and packet as value. There is one hash
       #                        per packet.
-      def file_to_array(args={})
+      def file_to_array(args = {})
         filename = args[:filename] || args[:file]
         if filename
           clear
@@ -125,7 +124,7 @@ module PacketFu
             if args[:keep_timestamps] || args[:keep_ts]
               ary.concat itf.packets.map { |pkt| { pkt.timestamp => pkt.data.to_s } }
             else
-              ary.concat itf.packets.map { |pkt| pkt.data.to_s}
+              ary.concat itf.packets.map { |pkt| pkt.data.to_s }
             end
           end
         end
@@ -136,7 +135,7 @@ module PacketFu
       #   :filename # The file to write to.
       #   :append   # If set to true, the packets are appended to the file, rather
       #             # than overwriting.
-      def to_file(args={})
+      def to_file(args = {})
         filename = args[:filename] || args[:file]
         unless (!filename.nil? || filename.kind_of?(String))
           raise ArgumentError, "Need a :filename for #{self.class}"
@@ -149,7 +148,7 @@ module PacketFu
         else
           mode = 'wb'
         end
-        ::File.open(filename,mode) {|f| f.write(self.to_s)}
+        ::File.open(filename, mode) { |f| f.write(self.to_s) }
         [filename, self.to_s.size]
       end
 
@@ -157,7 +156,7 @@ module PacketFu
 
       # Shorthand method for writing to a file. Can take either :file => 'name.pcapng'
       # or simply 'name.pcapng'
-      def write(filename='out.pcapng')
+      def write(filename = 'out.pcapng')
         if filename.kind_of?(Hash)
           f = filename[:filename] || filename[:file] || 'out.pcapng'
         else
@@ -168,7 +167,7 @@ module PacketFu
 
       # Shorthand method for appendong to a file. Can take either
       # :file => 'name.pcapng' or simply 'name.pcapng'
-      def append(filename='out.pcapng')
+      def append(filename = 'out.pcapng')
         if filename.kind_of?(Hash)
           f = filename[:filename] || filename[:file] || 'out.pcapng'
         else
@@ -188,7 +187,7 @@ module PacketFu
       #   :timestamp  # Sets an initial timestamp (Time object)
       #   :ts_inc     # Sets the increment between timestamps. Defaults to 1 second.
       #   :append     # If true, then the packets are appended to the end of a file.
-      def array_to_file(args={})
+      def array_to_file(args = {})
         case args
         when Hash
           filename = args[:filename] || args[:file]
@@ -196,6 +195,7 @@ module PacketFu
           unless ary.kind_of? Array
             raise ArgumentError, ':array parameter needs to be an array'
           end
+
           ts = args[:timestamp] || args[:ts] || Time.now
           ts_inc = args[:ts_inc] || 1
           append = !!args[:append]
@@ -228,13 +228,13 @@ module PacketFu
           this_ts = (this_ts / itf.ts_resol).to_i
           this_tsh = this_ts >> 32
           this_tsl = this_ts & 0xffffffff
-          this_pkt = EPB.new(:endian       => section.endian,
+          this_pkt = EPB.new(:endian => section.endian,
                              :interface_id => 0,
-                             :tsh          => this_tsh,
-                             :tsl          => this_tsl,
-                             :cap_len      => this_cap_len,
-                             :orig_len     => this_cap_len,
-                             :data         => this_data)
+                             :tsh => this_tsh,
+                             :tsl => this_tsl,
+                             :cap_len => this_cap_len,
+                             :orig_len => this_cap_len,
+                             :data => this_data)
           classify_block section, this_pkt
         end
 
@@ -244,7 +244,6 @@ module PacketFu
           self
         end
       end
-
 
       private
 
@@ -276,8 +275,8 @@ module PacketFu
       end
 
       def parse(type, io, shb)
-        types = PcapNG.constants(false).select { |c| c.to_s =~ /_TYPE/ }.
-          map { |c| [PcapNG.const_get(c).to_i, c] }
+        types = PcapNG.constants(false).select { |c| c.to_s =~ /_TYPE/ }
+                      .map { |c| [PcapNG.const_get(c).to_i, c] }
         types = Hash[types]
 
         if types.has_key?(type.to_i)
@@ -309,8 +308,6 @@ module PacketFu
           block.section = shb
         end
       end
-
     end
-
   end
 end

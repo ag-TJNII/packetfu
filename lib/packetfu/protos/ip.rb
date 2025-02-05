@@ -1,11 +1,11 @@
 # -*- coding: binary -*-
+
 require 'packetfu/protos/eth/header'
 require 'packetfu/protos/eth/mixin'
 require 'packetfu/protos/ip/header'
 require 'packetfu/protos/ip/mixin'
 
 module PacketFu
-
   # IPPacket is used to construct IP packets. They contain an EthHeader, an IPHeader, and usually
   # a transport-layer protocol such as UDPHeader, TCPHeader, or ICMPHeader.
   #
@@ -41,11 +41,12 @@ module PacketFu
     def self.can_parse?(str)
       return false unless str.size >= 34
       return false unless EthPacket.can_parse? str
-      if str[12,2] == "\x08\x00"
+
+      if str[12, 2] == "\x08\x00"
         if 1.respond_to? :ord
-          ipv = str[14,1][0].ord >> 4
+          ipv = str[14, 1][0].ord >> 4
         else
-          ipv = str[14,1][0] >> 4
+          ipv = str[14, 1][0] >> 4
         end
         return true if ipv == 4
       else
@@ -54,10 +55,10 @@ module PacketFu
     end
 
     # Creates a new IPPacket object.
-    def initialize(args={})
+    def initialize(args = {})
       @eth_header = EthHeader.new(args).read(args[:eth])
       @ip_header = IPHeader.new(args).read(args[:ip])
-      @eth_header.body=@ip_header
+      @eth_header.body = @ip_header
 
       @headers = [@eth_header, @ip_header]
       super
@@ -74,9 +75,7 @@ module PacketFu
       peek_data << "%04x" % ip_id.to_i
       peek_data.join
     end
-
   end
-
 end
 
 # vim: nowrap sw=2 sts=0 ts=2 ff=unix ft=ruby

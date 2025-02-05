@@ -10,9 +10,10 @@ require 'packetfu'
 require 'irb'
 
 module PacketFu
-  def whoami?(args={})
+  def whoami?(args = {})
     Utils.whoami?(args)
   end
+
   def arp(arg)
     Utils.arp(arg)
   end
@@ -25,25 +26,25 @@ include PacketFu
 # http://jisho.org/words?jap=+%E3%83%91%E3%82%B1%E3%83%83%E3%83%88%E3%83%95&eng=&dict=edict
 #
 def packetfu_ascii_art
-  puts <<EOM
- _______  _______  _______  _        _______ _________ _______
-(  ____ )(  ___  )(  ____ \\| \\    /\\(  ____ \\\\__   __/(  ____ \\|\\     /|
-| (    )|| (   ) || (    \\/|  \\  / /| (    \\/   ) (   | (    \\/| )   ( |
-| (____)|| (___) || |      |  (_/ / | (__       | |   | (__    | |   | |
-|  _____)|  ___  || |      |   _ (  |  __)      | |   |  __)   | |   | |
-| (      | (   ) || |      |  ( \\ \\ | (         | |   | (      | |   | |
-| )      | )   ( || (____/\\|  /  \\ \\| (____/\\   | |   | )      | (___) |
-|/       |/     \\|(_______/|_/    \\/(_______/   )_(   |/       (_______)
- ____________________________              ____________________________
-(                            )            (                            )
-| 01000001 00101101 01001000 )( )( )( )( )( 00101101 01000001 00100001 |
-|                            )( )( )( )( )(                            |
-(____________________________)            (____________________________)
-                               PacketFu
-             a mid-level packet manipulation library for ruby
+  puts <<~EOM
+     _______  _______  _______  _        _______ _________ _______
+    (  ____ )(  ___  )(  ____ \\| \\    /\\(  ____ \\\\__   __/(  ____ \\|\\     /|
+    | (    )|| (   ) || (    \\/|  \\  / /| (    \\/   ) (   | (    \\/| )   ( |
+    | (____)|| (___) || |      |  (_/ / | (__       | |   | (__    | |   | |
+    |  _____)|  ___  || |      |   _ (  |  __)      | |   |  __)   | |   | |
+    | (      | (   ) || |      |  ( \\ \\ | (         | |   | (      | |   | |
+    | )      | )   ( || (____/\\|  /  \\ \\| (____/\\   | |   | )      | (___) |
+    |/       |/     \\|(_______/|_/    \\/(_______/   )_(   |/       (_______)
+     ____________________________              ____________________________
+    (                            )            (                            )
+    | 01000001 00101101 01001000 )( )( )( )( )( 00101101 01000001 00100001 |
+    |                            )( )( )( )( )(                            |
+    (____________________________)            (____________________________)
+                                   PacketFu
+                 a mid-level packet manipulation library for ruby
 
-EOM
-  end
+  EOM
+end
 
 @pcaprub_loaded = PacketFu.pcaprub_loaded?
 # Displays a helpful banner.
@@ -67,9 +68,9 @@ end
 
 # Silly wlan0 workaround
 begin
-  $packetfu_default = PacketFu::Config.new(Utils.whoami?) if(@pcaprub_loaded && Process.euid.zero?)
+  $packetfu_default = PacketFu::Config.new(Utils.whoami?) if (@pcaprub_loaded && Process.euid.zero?)
 rescue RuntimeError
-  $packetfu_default = PacketFu::Config.new(Utils.whoami?(:iface => 'wlan0')) if(@pcaprub_loaded && Process.euid.zero?)
+  $packetfu_default = PacketFu::Config.new(Utils.whoami?(:iface => 'wlan0')) if (@pcaprub_loaded && Process.euid.zero?)
 end
 
 banner

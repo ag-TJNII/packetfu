@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 require 'spec_helper'
 require 'packetfu/protos/eth'
 require 'packetfu/protos/ipv6'
@@ -30,7 +31,6 @@ describe ICMPv6Packet, "when read from a pcap file" do
   it "should have the right checksum" do
     expect(@icmpv6_packet.icmpv6_sum.to_s(16)).to eq(@icmpv6_packet.icmpv6_calc_sum.to_s(16))
   end
-
 
   context "when initializing ICMPv6Header from scratch" do
     before :each do
@@ -94,5 +94,4 @@ describe ICMPv6Packet, "when read from a pcap file" do
       expect(pkt.icmpv6_type.to_i).to eql(128)
     end
   end
-
 end

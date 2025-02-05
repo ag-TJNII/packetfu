@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 module PacketFu
   # ICMPHeader is a complete ICMP struct, used in ICMPPacket. ICMP is
   # typically used for network administration and connectivity testing.
@@ -13,10 +14,9 @@ module PacketFu
   #   Int16   :icmp_sum    Default: calculated  # Checksum
   #   String  :body
   class ICMPHeader < Struct.new(:icmp_type, :icmp_code, :icmp_sum, :body)
-
     include StructFu
 
-    def initialize(args={})
+    def initialize(args = {})
       super(
         Int8.new(args[:icmp_type]),
         Int8.new(args[:icmp_code]),
@@ -27,31 +27,37 @@ module PacketFu
 
     # Returns the object in string form.
     def to_s
-      self.to_a.map {|x| x.to_s}.join
+      self.to_a.map { |x| x.to_s }.join
     end
 
     # Reads a string to populate the object.
     def read(str)
       force_binary(str)
       return self if str.nil?
-      self[:icmp_type].read(str[0,1])
-      self[:icmp_code].read(str[1,1])
-      self[:icmp_sum].read(str[2,2])
-      self[:body].read(str[4,str.size])
+
+      self[:icmp_type].read(str[0, 1])
+      self[:icmp_code].read(str[1, 1])
+      self[:icmp_sum].read(str[2, 2])
+      self[:body].read(str[4, str.size])
       self
     end
 
     # Setter for the type.
     def icmp_type=(i); typecast i; end
+
     # Getter for the type.
     def icmp_type; self[:icmp_type].to_i; end
+
     # Setter for the code.
     def icmp_code=(i); typecast i; end
+
     # Getter for the code.
     def icmp_code; self[:icmp_code].to_i; end
+
     # Setter for the checksum. Note, this is calculated automatically with
     # icmp_calc_sum.
     def icmp_sum=(i); typecast i; end
+
     # Getter for the checksum.
     def icmp_sum; self[:icmp_sum].to_i; end
 
@@ -73,9 +79,9 @@ module PacketFu
     def icmp_recalc(arg = :all)
       case arg.to_sym
       when :icmp_sum
-        self.icmp_sum=icmp_calc_sum
+        self.icmp_sum = icmp_calc_sum
       when :all
-        self.icmp_sum=icmp_calc_sum
+        self.icmp_sum = icmp_calc_sum
       else
         raise ArgumentError, "No such field `#{arg}'"
       end
@@ -86,6 +92,5 @@ module PacketFu
     def icmp_sum_readable
       "0x%04x" % icmp_sum
     end
-
   end
 end

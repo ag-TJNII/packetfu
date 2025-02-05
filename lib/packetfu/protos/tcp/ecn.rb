@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 module PacketFu
   # Implements the Explict Congestion Notification for TCPHeader.
   #
@@ -9,10 +10,9 @@ module PacketFu
   #  Integer(1 bit)  :c
   #  Integer(1 bit)  :e
   class TcpEcn < Struct.new(:n, :c, :e)
-
     include StructFu
 
-    def initialize(args={})
+    def initialize(args = {})
       super(args[:n], args[:c], args[:e]) if args
     end
 
@@ -26,6 +26,7 @@ module PacketFu
     def read(str)
       force_binary(str)
       return self if str.nil? || str.size < 2
+
       if 1.respond_to? :ord
         byte1 = str[0].ord
         byte2 = str[1].ord
@@ -38,6 +39,5 @@ module PacketFu
       self[:e] = byte2 & 0b01000000 == 0b01000000 ? 1 : 0
       self
     end
-
   end
 end

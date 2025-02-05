@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 require 'packetfu/protos/eth/header'
 require 'packetfu/protos/eth/mixin'
 
@@ -12,7 +13,6 @@ require 'packetfu/protos/udp/header'
 require 'packetfu/protos/udp/mixin'
 
 module PacketFu
-
   # UDPPacket is used to construct UDP Packets. They contain an EthHeader, an IPHeader, and a UDPHeader.
   #
   # == Example
@@ -55,34 +55,35 @@ module PacketFu
     def self.can_parse?(str)
       return false unless str.size >= 28
       return false unless EthPacket.can_parse? str
+
       if IPPacket.can_parse? str
-        return true if str[23,1] == "\x11"
+        return true if str[23, 1] == "\x11"
       elsif IPv6Packet.can_parse? str
-        return true if str[20,1] == "\x11"
+        return true if str[20, 1] == "\x11"
       end
       false
     end
 
-    def read(str=nil, args={})
+    def read(str = nil, args = {})
       super
       if args[:strip]
         udp_body_len = self.ip_len - self.ip_hlen - 8
-        @udp_header.body.read(@udp_header.body.to_s[0,udp_body_len])
+        @udp_header.body.read(@udp_header.body.to_s[0, udp_body_len])
         udp_calc_sum
         @ip_header.ip_recalc unless ipv6?
       end
       self
     end
 
-    def initialize(args={})
+    def initialize(args = {})
       if args[:on_ipv6] or args[:ipv6]
         @eth_header = EthHeader.new(args.merge(:eth_proto => 0x86dd)).read(args[:eth])
         @ipv6_header = IPv6Header.new(args).read(args[:ipv6])
-        @ipv6_header.ipv6_next=0x11
+        @ipv6_header.ipv6_next = 0x11
       else
         @eth_header = EthHeader.new(args).read(args[:eth])
         @ip_header = IPHeader.new(args).read(args[:ip])
-        @ip_header.ip_proto=0x11
+        @ip_header.ip_proto = 0x11
       end
       @udp_header = UDPHeader.new(args).read(args[:udp])
       if args[:on_ipv6] or args[:ipv6]
@@ -98,8 +99,8 @@ module PacketFu
       udp_calc_sum
     end
 
-    # udp_calc_sum() computes the UDP checksum, and is called upon intialization. 
-    # It usually should be called just prior to dropping packets to a file or on the wire. 
+    # udp_calc_sum() computes the UDP checksum, and is called upon intialization.
+    # It usually should be called just prior to dropping packets to a file or on the wire.
     def udp_calc_sum
       # This is /not/ delegated down to @udp_header since we need info
       # from the IP header, too.
@@ -116,13 +117,13 @@ module PacketFu
       checksum += udp_len.to_i
       if udp_len.to_i >= 8
         # For IP trailers. This isn't very reliable. :/
-        real_udp_payload = payload.to_s[0,(udp_len.to_i-8)] 
+        real_udp_payload = payload.to_s[0, (udp_len.to_i - 8)]
       else
         # I'm not going to mess with this right now.
-        real_udp_payload = payload 
+        real_udp_payload = payload
       end
       chk_payload = (real_udp_payload.size % 2 == 0 ? real_udp_payload : real_udp_payload + "\x00")
-      chk_payload.unpack("n*").each {|x| checksum = checksum+x}
+      chk_payload.unpack("n*").each { |x| checksum = checksum + x }
       checksum = checksum % 0xffff
       checksum = 0xffff - checksum
       checksum == 0 ? 0xffff : checksum
@@ -137,7 +138,7 @@ module PacketFu
     #     Recomputes the UDP checksum.
     #   :udp_len
     #     Recomputes the UDP length.
-    def udp_recalc(args=:all)
+    def udp_recalc(args = :all)
       case args
       when :udp_len
         @udp_header.udp_recalc
@@ -171,9 +172,7 @@ module PacketFu
         peek_data.join
       end
     end
-
   end
-
 end
 
 # vim: nowrap sw=2 sts=0 ts=2 ff=unix ft=ruby

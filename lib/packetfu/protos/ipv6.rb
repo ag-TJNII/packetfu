@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 require 'packetfu/protos/eth/header'
 require 'packetfu/protos/eth/mixin'
 
@@ -30,21 +31,22 @@ module PacketFu
     def self.can_parse?(str)
       return false unless EthPacket.can_parse? str
       return false unless str.size >= 54
-      return false unless str[12,2] == "\x86\xdd"
+      return false unless str[12, 2] == "\x86\xdd"
+
       true
     end
 
-    def initialize(args={})
+    def initialize(args = {})
       @eth_header = (args[:eth] || EthHeader.new)
       @ipv6_header = (args[:ipv6]	|| IPv6Header.new)
       @eth_header.eth_proto = 0x86dd
-      @eth_header.body=@ipv6_header
+      @eth_header.body = @ipv6_header
       @headers = [@eth_header, @ipv6_header]
       super
     end
 
     # Peek provides summary data on packet contents.
-    def peek(args={})
+    def peek(args = {})
       peek_data = ["6  "]
       peek_data << "%-5d" % self.to_s.size
       peek_data << "%-31s" % self.ipv6_saddr
@@ -54,7 +56,5 @@ module PacketFu
       peek_data << self.ipv6_next.to_s(16)
       peek_data.join
     end
-
   end
-  
 end

@@ -21,8 +21,8 @@ count = 0
   @pcaps = []
   1000.times do
     u = PacketFu::UDPPacket.new
-    u.ip_src = [rand(2**32-1)].pack("N")
-    u.ip_dst = [rand(2**32-1)].pack("N")
+    u.ip_src = [rand(2**32 - 1)].pack("N")
+    u.ip_dst = [rand(2**32 - 1)].pack("N")
     u.recalc
     @pcaps << u
   end

@@ -46,7 +46,6 @@ describe IPHeader do
       expect(@ip_header.ip_dst).to be_a(Integer)
       expect(@ip_header.body).to eql("")
     end
-
   end
 end
 

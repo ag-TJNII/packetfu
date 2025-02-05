@@ -1,4 +1,5 @@
 # coding: binary
+
 require 'packetfu/protos/eth/header'
 require 'packetfu/protos/eth/mixin'
 
@@ -9,7 +10,6 @@ require 'packetfu/protos/icmpv6/header'
 require 'packetfu/protos/icmpv6/mixin'
 
 module PacketFu
-
   # ICMPv6Packet is used to construct ICMPv6 Packets. They contain an EthHeader,
   # an IPv6Header, and a ICMPv6Header.
   #
@@ -45,11 +45,12 @@ module PacketFu
       return false unless str.size >= 58
       return false unless EthPacket.can_parse? str
       return false unless IPv6Packet.can_parse? str
-      return false unless str[20,1] == [PacketFu::ICMPv6Header::PROTOCOL_NUMBER].pack('C')
+      return false unless str[20, 1] == [PacketFu::ICMPv6Header::PROTOCOL_NUMBER].pack('C')
+
       return true
     end
 
-    def initialize(args={})
+    def initialize(args = {})
       @eth_header = EthHeader.new(args).read(args[:eth])
       @ipv6_header = IPv6Header.new(args).read(args[:ipv6])
       @ipv6_header.ipv6_next = PacketFu::ICMPv6Header::PROTOCOL_NUMBER
@@ -72,11 +73,11 @@ module PacketFu
       checksum += (icmpv6_type.to_i << 8) + icmpv6_code.to_i
       chk_body = (payload.to_s.size % 2 == 0 ? payload.to_s : payload.to_s + "\x00")
       if 1.respond_to? :ord
-        chk_body.split("").each_slice(2).map { |x| (x[0].ord << 8) + x[1].ord }.
-          each { |y| checksum += y }
+        chk_body.split("").each_slice(2).map { |x| (x[0].ord << 8) + x[1].ord }
+                .each { |y| checksum += y }
       else
-        chk_body.split("").each_slice(2).map { |x| (x[0] << 8) + x[1] }.
-          each { |y| checksum += y }
+        chk_body.split("").each_slice(2).map { |x| (x[0] << 8) + x[1] }
+                .each { |y| checksum += y }
       end
       checksum = checksum % 0xffff
       checksum = 0xffff - checksum
@@ -112,7 +113,5 @@ module PacketFu
       peek_data << "%21s" % "#{self.ipv6_daddr}"
       peek_data.join
     end
-
   end
-
 end

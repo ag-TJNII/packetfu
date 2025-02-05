@@ -1,9 +1,8 @@
 # -*- coding: binary -*-
+
 module PacketFu
   module PcapNG
-
     module Block
-
       # Calculate block length and update :block_len and block_len2 fields
       def recalc_block_len
         len = to_a.map(&:to_s).join.size
@@ -18,8 +17,6 @@ module PacketFu
           end
         end
       end
-
     end
-
   end
 end

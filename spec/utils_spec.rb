@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 require 'spec_helper'
 require 'packetfu/protos/eth'
 require 'packetfu/protos/ip'
@@ -118,22 +119,22 @@ describe Utils do
       expect(util_reply[:ip_src]).to eq("\n\x00\x00\x01")
       expect(util_reply[:ip4_obj]).to eq(IPAddr.new("10.0.0.0/24"))
     end
-
   end
 
   context 'when using arp' do
-
     before(:all) do
-      @whoami = lambda { |iface| {
-                           :iface => iface,
-                           :eth_saddr => '00:01:02:03:dd:b3',
-                           :eth_src => "\x00\x01\x02\x03\xdd\xb3",
-                           :ip_saddr => '192.168.254.1',
-                           :ip_src => 0xc0a8fe01,
-                           :ip_src_bin => "\xc0\xa8\xfe\x01",
-                           :eth_dst => "\x00\x01\x02\x03\xcc\xb2",
-                           :eth_daddr => '00:01:02:03:cc:b2',
-                         } }
+      @whoami = lambda { |iface|
+        {
+          :iface => iface,
+          :eth_saddr => '00:01:02:03:dd:b3',
+          :eth_src => "\x00\x01\x02\x03\xdd\xb3",
+          :ip_saddr => '192.168.254.1',
+          :ip_src => 0xc0a8fe01,
+          :ip_src_bin => "\xc0\xa8\xfe\x01",
+          :eth_dst => "\x00\x01\x02\x03\xcc\xb2",
+          :eth_daddr => '00:01:02:03:cc:b2',
+        }
+      }
     end
 
     context 'when cached' do
@@ -173,6 +174,5 @@ describe Utils do
         expect(util_reply).to eq('00:13:20:c3:7d:22')
       end
     end
-
   end
 end

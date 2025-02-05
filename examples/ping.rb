@@ -23,6 +23,7 @@ capture_thread = Thread.new do
       cap.stream.each do |p|
         pkt = PacketFu::Packet.parse p
         next unless pkt.is_icmp?
+
         if pkt.ip_saddr == ip and pkt.icmp_type == 0
           puts "Got ICMP echo reply from #{ip}"
           break

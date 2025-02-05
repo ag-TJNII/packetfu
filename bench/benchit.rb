@@ -3,7 +3,7 @@ require 'packetfu'
 require 'benchmark'
 class String
   def bin
-    self.scan(/../).map {|x| x.to_i(16).chr}.join
+    self.scan(/../).map { |x| x.to_i(16).chr }.join
   end
 end
 
@@ -25,38 +25,38 @@ data = []
 puts "Parsing a TCP Packet..."
 require 'pp'
 Benchmark.bm do |bm|
-  data << bm.report("PacketFu::Packet.parse()  ") { iters.times {PacketFu::Packet.parse(TCP_PACKET)} }
-  data << bm.report("PacketFu::EthPacket.new.read()  ") { iters.times {PacketFu::EthPacket.new.read(TCP_PACKET)} }
-  data << bm.report("PacketFu::IPPacket.new.read()  ") { iters.times {PacketFu::IPPacket.new.read(TCP_PACKET)} }
-  data << bm.report("PacketFu::TCPPacket.new.read()  ") { iters.times {PacketFu::TCPPacket.new.read(TCP_PACKET)} }
+  data << bm.report("PacketFu::Packet.parse()  ") { iters.times { PacketFu::Packet.parse(TCP_PACKET) } }
+  data << bm.report("PacketFu::EthPacket.new.read()  ") { iters.times { PacketFu::EthPacket.new.read(TCP_PACKET) } }
+  data << bm.report("PacketFu::IPPacket.new.read()  ") { iters.times { PacketFu::IPPacket.new.read(TCP_PACKET) } }
+  data << bm.report("PacketFu::TCPPacket.new.read()  ") { iters.times { PacketFu::TCPPacket.new.read(TCP_PACKET) } }
   nil
 end
 
 puts ""
 puts "Parsing a UDP Packet..."
 Benchmark.bm do |bm|
-  data << bm.report("PacketFu::Packet.parse()  ") { iters.times {PacketFu::Packet.parse(UDP_PACKET)} }
-  data << bm.report("PacketFu::EthPacket.new.read()  ") { iters.times {PacketFu::EthPacket.new.read(UDP_PACKET)} }
-  data << bm.report("PacketFu::IPPacket.new.read()  ") { iters.times {PacketFu::IPPacket.new.read(UDP_PACKET)} }
-  data << bm.report("PacketFu::UDPPacket.new.read()  ") { iters.times {PacketFu::UDPPacket.new.read(UDP_PACKET)} }
+  data << bm.report("PacketFu::Packet.parse()  ") { iters.times { PacketFu::Packet.parse(UDP_PACKET) } }
+  data << bm.report("PacketFu::EthPacket.new.read()  ") { iters.times { PacketFu::EthPacket.new.read(UDP_PACKET) } }
+  data << bm.report("PacketFu::IPPacket.new.read()  ") { iters.times { PacketFu::IPPacket.new.read(UDP_PACKET) } }
+  data << bm.report("PacketFu::UDPPacket.new.read()  ") { iters.times { PacketFu::UDPPacket.new.read(UDP_PACKET) } }
   nil
 end
 
 puts ""
 puts "Parsing a ARP Packet..."
 Benchmark.bm do |bm|
-  data << bm.report("PacketFu::Packet.parse()  ") { iters.times {PacketFu::Packet.parse(ARP_PACKET)} }
-  data << bm.report("PacketFu::EthPacket.new.read()  ") { iters.times {PacketFu::EthPacket.new.read(ARP_PACKET)} }
-  data << bm.report("PacketFu::ARPPacket.new.read()  ") { iters.times {PacketFu::ARPPacket.new.read(ARP_PACKET)} }
+  data << bm.report("PacketFu::Packet.parse()  ") { iters.times { PacketFu::Packet.parse(ARP_PACKET) } }
+  data << bm.report("PacketFu::EthPacket.new.read()  ") { iters.times { PacketFu::EthPacket.new.read(ARP_PACKET) } }
+  data << bm.report("PacketFu::ARPPacket.new.read()  ") { iters.times { PacketFu::ARPPacket.new.read(ARP_PACKET) } }
   nil
 end
 
 puts ""
 puts "Parsing a IPv6 Packet..."
 Benchmark.bm do |bm|
-  data << bm.report("PacketFu::Packet.parse()  ") { iters.times {PacketFu::Packet.parse(IPV6_PACKET)} }
-  data << bm.report("PacketFu::EthPacket.new.read()  ") { iters.times {PacketFu::EthPacket.new.read(IPV6_PACKET)} }
-  data << bm.report("PacketFu::IPv6Packet.new.read()  ") { iters.times {PacketFu::IPv6Packet.new.read(IPV6_PACKET)} }
+  data << bm.report("PacketFu::Packet.parse()  ") { iters.times { PacketFu::Packet.parse(IPV6_PACKET) } }
+  data << bm.report("PacketFu::EthPacket.new.read()  ") { iters.times { PacketFu::EthPacket.new.read(IPV6_PACKET) } }
+  data << bm.report("PacketFu::IPv6Packet.new.read()  ") { iters.times { PacketFu::IPv6Packet.new.read(IPV6_PACKET) } }
   nil
 end
 if file_pfx

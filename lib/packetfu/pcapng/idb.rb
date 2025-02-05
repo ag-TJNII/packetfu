@@ -2,7 +2,6 @@ require 'stringio'
 
 module PacketFu
   module PcapNG
-
     # Pcapng::IDB represents a Interface Description Block (IDB) of a pcapng file.
     #
     # == Pcapng::IDB Definition
@@ -21,12 +20,12 @@ module PacketFu
       attr_accessor :section
       attr_accessor :packets
 
-      MIN_SIZE     = 5*4
+      MIN_SIZE = 5 * 4
 
       # Option code for if_tsresol option
       OPTION_IF_TSRESOL = 9
 
-      def initialize(args={})
+      def initialize(args = {})
         @endian = set_endianness(args[:endian] || :little)
         @packets = []
         @options_decoded = false
@@ -36,8 +35,8 @@ module PacketFu
       end
 
       # Used by #initialize to set the initial fields
-      def init_fields(args={})
-        args[:type]  = @int32.new(args[:type] || PcapNG::IDB_TYPE.to_i)
+      def init_fields(args = {})
+        args[:type] = @int32.new(args[:type] || PcapNG::IDB_TYPE.to_i)
         args[:block_len] = @int32.new(args[:block_len] || MIN_SIZE)
         args[:link_type] = @int16.new(args[:link_type] || 1)
         args[:reserved] = @int16.new(args[:reserved] || 0)
@@ -71,17 +70,17 @@ module PacketFu
         unless self[:block_len].to_i == self[:block_len2].to_i
           raise InvalidFileError, 'Incoherency in Interface Description Block'
         end
-      
+
         self
       end
-      
+
       # Add a xPB to this section
       def <<(xpb)
         @packets << xpb
       end
 
       # Give timestamp resolution for this interface
-      def ts_resol(force=false)
+      def ts_resol(force = false)
         if @options_decoded and not force
           @ts_resol
         else
@@ -93,11 +92,11 @@ module PacketFu
           while idx < options.length do
             opt_code, opt_len = options[idx, 4].unpack("#{packstr}2")
             if opt_code == OPTION_IF_TSRESOL and opt_len == 1
-              tsresol = options[idx+4, 1].unpack('C').first
+              tsresol = options[idx + 4, 1].unpack('C').first
               if tsresol & 0x80 == 0
-                @ts_resol = 10 ** -tsresol
+                @ts_resol = 10**-tsresol
               else
-                @ts_resol = 2 ** -(tsresol & 0x7f)
+                @ts_resol = 2**-(tsresol & 0x7f)
               end
 
               @options_decoded = true
@@ -108,7 +107,7 @@ module PacketFu
           end
 
           @options_decoded = true
-          @ts_resol = 1E-6  # default value
+          @ts_resol = 1E-6 # default value
         end
       end
 
@@ -118,8 +117,6 @@ module PacketFu
         recalc_block_len
         to_a.map(&:to_s).join + @packets.map(&:to_s).join
       end
-
     end
-
   end
 end

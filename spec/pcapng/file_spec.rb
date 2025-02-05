@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 require 'tempfile'
 require 'spec_helper'
 require 'packetfu'
@@ -57,6 +58,7 @@ module PacketFu
                                    endian == :little ? 'output_le' : 'output_be')
             PCAPNG_TEST_FILES.each do |file, sections|
               next if file == 'difficult/test202.pcapng'
+
               @pcapng.clear
               @pcapng.readfile ::File.join(base_dir, file)
               expect(@pcapng.sections[0].endian).to eq(endian)
@@ -109,7 +111,7 @@ module PacketFu
       context '#read_packets' do
         before(:all) do
           @expected = [UDPPacket] * 2 + [ICMPPacket] * 3 + [ARPPacket] * 2 +
-            [TCPPacket] * 3 + [ICMPPacket]
+                      [TCPPacket] * 3 + [ICMPPacket]
         end
 
         it 'returns an array of Packets' do
@@ -236,21 +238,21 @@ module PacketFu
           @pcapng.clear
           @pcapng.array_to_file(:array => packets,
                                 :timestamp => Time.utc(2000, 1, 1),
-                                :ts_inc => 3600*24)
+                                :ts_inc => 3600 * 24)
           @pcapng.write @tmpfilename
 
           @pcapng.clear
           @pcapng.readfile(@tmpfilename)
           @pcapng.sections[0].interfaces[0].packets.each_with_index do |pkt, i|
             expect(pkt.data).to eq(packets[i].to_s)
-            expect(pkt.timestamp).to eq(Time.utc(2000, 1, 1+i))
+            expect(pkt.timestamp).to eq(Time.utc(2000, 1, 1 + i))
           end
         end
 
         it 'gets a hash containing couples of Time and Packet objects' do
           packets = @pcapng.read_packets(@file)[0..3]
           timestamp = Time.utc(2000, 1, 1)
-          ts_inc = 3600*24 * 2
+          ts_inc = 3600 * 24 * 2
           array = []
           packets.each_with_index do |pkt, i|
             array << { (timestamp + ts_inc * i) => pkt }
@@ -264,7 +266,7 @@ module PacketFu
           @pcapng.readfile(@tmpfilename)
           @pcapng.sections[0].interfaces[0].packets.each_with_index do |pkt, i|
             expect(pkt.data).to eq(packets[i].to_s)
-            expect(pkt.timestamp).to eq(Time.utc(2000, 1, 1+2*i))
+            expect(pkt.timestamp).to eq(Time.utc(2000, 1, 1 + 2 * i))
           end
         end
 

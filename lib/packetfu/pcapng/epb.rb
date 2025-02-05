@@ -2,7 +2,6 @@ require 'stringio'
 
 module PacketFu
   module PcapNG
-
     # Pcapng::EPB represents a Extended Packet Block (EPB) of a pcapng file.
     #
     # == Pcapng::EPB Definition
@@ -23,9 +22,9 @@ module PacketFu
       attr_accessor :endian
       attr_accessor :interface
 
-      MIN_SIZE     = 8*4
+      MIN_SIZE = 8 * 4
 
-      def initialize(args={})
+      def initialize(args = {})
         @endian = set_endianness(args[:endian] || :little)
         init_fields(args)
         super(args[:type], args[:block_len], args[:interface_id], args[:tsh],
@@ -34,8 +33,8 @@ module PacketFu
       end
 
       # Used by #initialize to set the initial fields
-      def init_fields(args={})
-        args[:type]  = @int32.new(args[:type] || PcapNG::EPB_TYPE.to_i)
+      def init_fields(args = {})
+        args[:type] = @int32.new(args[:type] || PcapNG::EPB_TYPE.to_i)
         args[:block_len] = @int32.new(args[:block_len] || MIN_SIZE)
         args[:interface_id] = @int32.new(args[:interface_id] || 0)
         args[:tsh] = @int32.new(args[:tsh] || 0)
@@ -79,7 +78,7 @@ module PacketFu
         unless self[:block_len].to_i == self[:block_len2].to_i
           raise InvalidFileError, 'Incoherency in Extended Packet Block'
         end
-      
+
         self
       end
 
@@ -95,7 +94,6 @@ module PacketFu
         to_a.map(&:to_s).join
       end
 
-
       private
 
       def ts_resol
@@ -105,8 +103,6 @@ module PacketFu
           @interface.ts_resol
         end
       end
-
     end
-
   end
 end

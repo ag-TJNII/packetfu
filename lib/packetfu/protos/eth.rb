@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 require 'packetfu/protos/eth/header'
 require 'packetfu/protos/eth/mixin'
 
@@ -24,25 +25,25 @@ module PacketFu
       # XXX Temporary fix. Need to extend the EthHeader class to handle more.
       valid_eth_types = [0x0800, 0x0806, 0x86dd, 0x88cc]
       return false unless str.size >= 14
-      type = str[12,2].unpack("n").first rescue nil
+
+      type = str[12, 2].unpack("n").first rescue nil
       return false unless valid_eth_types.include? type
+
       true
     end
 
     # Does nothing, really, since there's no length or
     # checksum to calculate for a straight Ethernet packet.
-    def recalc(args={})
+    def recalc(args = {})
       @headers[0].inspect
     end
 
-    def initialize(args={})
+    def initialize(args = {})
       @eth_header = EthHeader.new(args).read(args[:eth])
       @headers = [@eth_header]
       super
     end
-
   end
-
 end
 
 # vim: nowrap sw=2 sts=0 ts=2 ff=unix ft=ruby

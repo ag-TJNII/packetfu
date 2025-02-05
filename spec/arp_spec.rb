@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 require 'spec_helper'
 require 'packetfu/protos/eth'
 require 'packetfu/protos/arp'
@@ -32,7 +33,7 @@ describe ARPHeader do
 
     it "should be able to parse an ARPHeader from string I/O" do
       hexified_arp_header = "000108000604000200032f1a74dec0a80102001b1151b7cec0a80169"
-      raw_arp_header = hexified_arp_header.scan(/../).map {|x| x.to_i(16)}.pack("C*")
+      raw_arp_header = hexified_arp_header.scan(/../).map { |x| x.to_i(16) }.pack("C*")
 
       @arp_header.read(raw_arp_header)
       expect(@arp_header.to_s).to eql(raw_arp_header)
@@ -71,8 +72,8 @@ describe ARPPacket do
       expect(@arp_packet.arp_proto).to eql(opts_hash[:arp_proto])
 
       # TODO: Fix the bug that is preventing these values from setting
-      #expect(@arp_packet.arp_opcode).to eql(opts_hash[:arp_opcode])
-      #expect(@arp_packet.arp_src_ip).to eql(opts_hash[:arp_src_ip])
+      # expect(@arp_packet.arp_opcode).to eql(opts_hash[:arp_opcode])
+      # expect(@arp_packet.arp_src_ip).to eql(opts_hash[:arp_src_ip])
     end
 
     it "should have the ability to set IP addresses" do
@@ -117,7 +118,7 @@ describe ARPPacket do
 
     it "should allow the setting of all attributes" do
       hexified_arp_packet = "000108000604000200032f1a74dec0a80102001b1151b7cec0a80169"
-      raw_arp_packet = hexified_arp_packet.scan(/../).map {|x| x.to_i(16)}.pack("C*")
+      raw_arp_packet = hexified_arp_packet.scan(/../).map { |x| x.to_i(16) }.pack("C*")
 
       @arp_packet.arp_hw = 1
       @arp_packet.arp_proto = 0x0800
@@ -129,7 +130,7 @@ describe ARPPacket do
       @arp_packet.arp_dst_mac = "\x00\x1b\x11\x51\xb7\xce"
       @arp_packet.arp_dst_ip = "\xc0\xa8\x01\x69"
       @arp_packet.payload = ""
-      expect(@arp_packet.to_s[14,0xffff]).to eql(raw_arp_packet)
+      expect(@arp_packet.to_s[14, 0xffff]).to eql(raw_arp_packet)
     end
 
     context "when setting arp flavors" do
@@ -165,7 +166,7 @@ describe ARPPacket do
 
     it "should be able to parse an ARPPacket from string I/O" do
       hexified_arp_packet = "001b1151b7ce00032f1a74de0806000108000604000200032f1a74dec0a80102001b1151b7cec0a80169c0a80169"
-      raw_arp_packet = hexified_arp_packet.scan(/../).map {|x| x.to_i(16)}.pack("C*")
+      raw_arp_packet = hexified_arp_packet.scan(/../).map { |x| x.to_i(16) }.pack("C*")
 
       @arp_packet.read(raw_arp_packet)
       expect(@arp_packet.to_s).to eql(raw_arp_packet)

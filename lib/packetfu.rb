@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 require 'ipaddr'
 require 'packetfu/common'
 require 'packetfu/structfu'

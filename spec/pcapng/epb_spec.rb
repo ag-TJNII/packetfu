@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 require 'spec_helper'
 require 'packetfu'
 
@@ -48,7 +49,6 @@ module PacketFu
           expect(@epb.orig_len.to_i).to eq(@epb.cap_len.to_i)
           expect(@epb.has_options?).to be(false)
         end
-
       end
 
       it 'should decode packet timestamp with default resolution' do

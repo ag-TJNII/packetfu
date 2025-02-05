@@ -1,4 +1,3 @@
-
 begin
   require 'rspec/core/rake_task'
 rescue LoadError
@@ -8,4 +7,3 @@ else
 
   task :default => :spec
 end
-

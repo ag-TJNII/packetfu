@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 # Usage:
 # ruby examples/ifconfig.rb
 

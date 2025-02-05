@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 require 'spec_helper'
 require 'packetfu/protos/eth'
 require 'packetfu/protos/ip'
@@ -48,7 +49,6 @@ describe EthMac do
       expect(@eth_mac.oui.oui).to eql(0x6d62)
     end
   end
-
 end
 
 describe EthHeader do
@@ -98,19 +98,19 @@ describe EthPacket do
       @eth_packet.eth_src = "\x00\x1b\x11\x51\xb7\xce"
       @eth_packet.eth_proto = 0x0800
 
-      expect(@eth_packet.to_s[0,14]).to eql(raw_header)
+      expect(@eth_packet.to_s[0, 14]).to eql(raw_header)
     end
 
     it "should be able to match a predefined eth_packet via opts" do
       raw_header = "00032f1a74de001b1151b7ce0800".scan(/../).map { |x| x.to_i(16) }.pack("C*")
 
       @eth_packet = EthPacket.new(
-                      :eth_dst => "\x00\x03\x2f\x1a\x74\xde",
-                      :eth_src => "\x00\x1b\x11\x51\xb7\xce",
-                      :eth_proto => 0x0800
-                    )
+        :eth_dst => "\x00\x03\x2f\x1a\x74\xde",
+        :eth_src => "\x00\x1b\x11\x51\xb7\xce",
+        :eth_proto => 0x0800
+      )
 
-      expect(@eth_packet.to_s[0,14]).to eql(raw_header)
+      expect(@eth_packet.to_s[0, 14]).to eql(raw_header)
     end
   end
 
@@ -118,13 +118,12 @@ describe EthPacket do
     before(:each) { @temp_file = Tempfile.new('arp_pcap') }
     after(:each) { @temp_file.close; @temp_file.unlink }
 
-
     it "should write a pcap file to disk" do
       @eth_packet = EthPacket.new(
-                      :eth_dst => "\x00\x03\x2f\x1a\x74\xde",
-                      :eth_src => "\x00\x1b\x11\x51\xb7\xce",
-                      :eth_proto => 0x0800
-                    )
+        :eth_dst => "\x00\x03\x2f\x1a\x74\xde",
+        :eth_src => "\x00\x1b\x11\x51\xb7\xce",
+        :eth_proto => 0x0800
+      )
 
       @eth_packet.recalc
       expect(@temp_file.read).to eql("")

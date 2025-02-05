@@ -1,9 +1,9 @@
 # -*- coding: binary -*-
+
 # StructFu, a nifty way to leverage Ruby's built in Struct class
 # to create meaningful binary data.
 
 module StructFu
-
   # Normally, self.size and self.length will refer to the Struct
   # size as an array. It's a hassle to redefine, so this introduces some
   # shorthand to get at the size of the resultant string.
@@ -81,8 +81,8 @@ module StructFu
       (self.v || self.d).to_f
     end
 
-    def initialize(value=nil, endian=nil, width=nil, default=nil)
-      super(value,endian,width,default=0)
+    def initialize(value = nil, endian = nil, width = nil, default = nil)
+      super(value, endian, width, default = 0)
     end
 
     # Reads either an Integer or a packed string, and populates the value accordingly.
@@ -90,28 +90,25 @@ module StructFu
       self.v = i.kind_of?(Integer) ? i.to_i : i.to_s.unpack(@packstr).first
       self
     end
-
   end
 
   # Int8 is a one byte value.
   class Int8 < Int
-
-    def initialize(v=nil)
-      super(v,nil,w=1)
+    def initialize(v = nil)
+      super(v, nil, w = 1)
       @packstr = "C"
     end
 
     # Returns a one byte value as a packed string.
     def to_s
-     [(self.v || self.d)].pack("C")
+      [(self.v || self.d)].pack("C")
     end
-
   end
 
   # Int16 is a two byte value.
   class Int16 < Int
-    def initialize(v=nil, e=:big)
-      super(v,e,w=2)
+    def initialize(v = nil, e = :big)
+      super(v, e, w = 2)
       @packstr = (self.e == :big) ? "n" : "v"
     end
 
@@ -119,8 +116,7 @@ module StructFu
     def to_s
       @packstr = (self.e == :big) ? "n" : "v"
       [(self.v || self.d)].pack(@packstr)
-     end
-
+    end
   end
 
   # Int16be is a two byte value in big-endian format. The endianness cannot be altered.
@@ -131,16 +127,16 @@ module StructFu
   # Int16le is a two byte value in little-endian format. The endianness cannot be altered.
   class Int16le < Int16
     undef :endian=
-    def initialize(v=nil, e=:little)
-      super(v,e)
+    def initialize(v = nil, e = :little)
+      super(v, e)
       @packstr = (self.e == :big) ? "n" : "v"
     end
   end
 
   # Int32 is a four byte value.
   class Int32 < Int
-    def initialize(v=nil, e=:big)
-      super(v,e,w=4)
+    def initialize(v = nil, e = :big)
+      super(v, e, w = 4)
       @packstr = (self.e == :big) ? "N" : "V"
     end
 
@@ -148,8 +144,7 @@ module StructFu
     def to_s
       @packstr = (self.e == :big) ? "N" : "V"
       [(self.v || self.d)].pack(@packstr)
-     end
-
+    end
   end
 
   # Int32be is a four byte value in big-endian format. The endianness cannot be altered.
@@ -160,15 +155,15 @@ module StructFu
   # Int32le is a four byte value in little-endian format. The endianness cannot be altered.
   class Int32le < Int32
     undef :endian=
-    def initialize(v=nil, e=:little)
-      super(v,e)
+    def initialize(v = nil, e = :little)
+      super(v, e)
     end
   end
 
   # Int64 is a eight byte value.
   class Int64 < Int
-    def initialize(v=nil, e=:big)
-      super(v, e, w=4)
+    def initialize(v = nil, e = :big)
+      super(v, e, w = 4)
       @packstr = (self.e == :big) ? 'Q>' : 'Q<'
     end
 
@@ -187,8 +182,8 @@ module StructFu
   # Int64le is a eight byte value in little-endian format. The endianness cannot be altered.
   class Int64le < Int64
     undef :endian=
-    def initialize(v=nil, e=:little)
-      super(v,e)
+    def initialize(v = nil, e = :little)
+      super(v, e)
     end
   end
 
@@ -208,10 +203,9 @@ module StructFu
   #
   # Note that IntStrings aren't used for much, but it seemed like a good idea at the time.
   class IntString < Struct.new(:int, :string, :mode)
-
-    def initialize(string='',int=Int8,mode=nil)
+    def initialize(string = '', int = Int8, mode = nil)
       if int < Int
-        super(int.new,string,mode)
+        super(int.new, string, mode)
         calc
       else
         raise "IntStrings need a StructFu::Int for a length."
@@ -256,7 +250,7 @@ module StructFu
 
     # Override the size, if you must.
     def len=(i)
-      self[:int].value=i
+      self[:int].value = i
     end
 
     # Read takes a string, assumes an int width as previously
@@ -264,12 +258,13 @@ module StructFu
     # the int value isn't lying. You're on your own to test
     # for that (or use parse() with a :mode set).
     def read(s)
-      unless s[0,int.width].size == int.width
+      unless s[0, int.width].size == int.width
         raise StandardError, "String is too short for type #{int.class}"
       else
-        int.read(s[0,int.width])
-        self[:string] = s[int.width,s.size]
+        int.read(s[0, int.width])
+        self[:string] = s[int.width, s.size]
       end
+
       self.to_s
     end
 
@@ -286,37 +281,34 @@ module StructFu
     # else   : If neither of these modes are set, just perfom a normal read().
     # This is the default.
     def parse(s)
-      unless s[0,int.width].size == int.width
+      unless s[0, int.width].size == int.width
         raise StandardError, "String is too short for type #{int.class}"
       else
         case mode
         when :parse
-          int.read(s[0,int.width])
-          self[:string] = s[int.width,int.value]
+          int.read(s[0, int.width])
+          self[:string] = s[int.width, int.value]
           if string.size < int.value
             self[:string] += ("\x00" * (int.value - self[:string].size))
           end
         when :fix
-          self.string = s[int.width,s.size]
+          self.string = s[int.width, s.size]
         else
           return read(s)
         end
       end
+
       self.to_s
     end
-
   end
-
 end
 
 class Struct
-
   # Monkeypatch for Struct to include some string safety -- anything that uses
   # Struct is going to presume binary strings anyway.
   def force_binary(str)
     PacketFu.force_binary(str)
   end
-
 end
 
 # vim: nowrap sw=2 sts=0 ts=2 ff=unix ft=ruby

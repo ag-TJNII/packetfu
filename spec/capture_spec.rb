@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 require 'spec_helper'
 require 'packetfu/protos/eth'
 require 'packetfu/protos/ip'
@@ -13,7 +14,6 @@ require 'tempfile'
 include PacketFu
 
 describe Capture do
-
   if Process.uid != 0
     warn "Not running as root, PacketFu::Capture capabilities that require root will be skipped"
   end
@@ -35,7 +35,7 @@ describe Capture do
       if Process.uid == 0
         expect(@capture.filter).to eql(nil)
       else
-        expect{@capture.filter}.to raise_error(RuntimeError)
+        expect { @capture.filter }.to raise_error(RuntimeError)
       end
     end
 
@@ -107,6 +107,7 @@ describe Capture do
               cap.stream.each do |p|
                 pkt = PacketFu::Packet.parse p
                 next unless pkt.is_icmp?
+
                 count += 1
 
                 if pkt.ip_daddr == daddr and pkt.icmp_type == 8
@@ -127,7 +128,7 @@ describe Capture do
           end
         end
 
-        capture_thread = Thread.new { expect(do_bpf_capture_test(daddr,daddr2)).to eql(true) }
+        capture_thread = Thread.new { expect(do_bpf_capture_test(daddr, daddr2)).to eql(true) }
         %x{ping -c 1 #{daddr}}
         %x{ping -c 1 #{daddr2}}
         capture_thread.join

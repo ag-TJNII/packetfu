@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 require 'spec_helper'
 require 'packetfu'
 require 'tempfile'
@@ -8,10 +9,10 @@ include PacketFu
 
 describe PcapHeader do
   before(:all) do
-    @file = File.open("test/sample.pcap") {|f| f.read}
+    @file = File.open("test/sample.pcap") { |f| f.read }
     @file.force_encoding "binary" if @file.respond_to? :force_encoding
-    @file_magic = @file[0,4]
-    @file_header = @file[0,24]
+    @file_magic = @file[0, 4]
+    @file_header = @file[0, 24]
   end
 
   context "when initializing" do
@@ -30,10 +31,10 @@ describe PcapHeader do
       expect(@pcap_header.sigfigs).to eql(StructFu::Int32le.new)
       expect(@pcap_header.snaplen).to eql(StructFu::Int32le.new(65535))
       expect(@pcap_header.network).to eql(StructFu::Int32le.new(1))
-      expect(@pcap_header.to_s[0,4]).to eql("\xD4\xC3\xB2\xA1")
-      expect(@pcap_header.to_s[0,4]).to eql(@file_magic)
-      expect(@pcap_header.to_s[0,24]).to eql("\xD4\xC3\xB2\xA1\x02\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\xFF\xFF\x00\x00\x01\x00\x00\x00")
-      expect(@pcap_header.to_s[0,24]).to eql(@file_header)
+      expect(@pcap_header.to_s[0, 4]).to eql("\xD4\xC3\xB2\xA1")
+      expect(@pcap_header.to_s[0, 4]).to eql(@file_magic)
+      expect(@pcap_header.to_s[0, 24]).to eql("\xD4\xC3\xB2\xA1\x02\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\xFF\xFF\x00\x00\x01\x00\x00\x00")
+      expect(@pcap_header.to_s[0, 24]).to eql(@file_header)
     end
 
     it "should have sane defaults (big)" do
@@ -47,13 +48,13 @@ describe PcapHeader do
       expect(@pcap_header.sigfigs).to eql(StructFu::Int32be.new)
       expect(@pcap_header.snaplen).to eql(StructFu::Int32be.new(65535))
       expect(@pcap_header.network).to eql(StructFu::Int32be.new(1))
-      expect(@pcap_header.to_s[0,4]).to eql("\xA1\xB2\xC3\xD4")
-      expect(@pcap_header.to_s[0,24]).to eql("\xA1\xB2\xC3\xD4\x00\x02\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xFF\xFF\x00\x00\x00\x01")
+      expect(@pcap_header.to_s[0, 4]).to eql("\xA1\xB2\xC3\xD4")
+      expect(@pcap_header.to_s[0, 24]).to eql("\xA1\xB2\xC3\xD4\x00\x02\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xFF\xFF\x00\x00\x00\x01")
     end
 
     it "should error on bad endian type" do
       # We want to ensure our endianness is little or big.
-      expect{PcapHeader.new(:endian => :just_right)}.to raise_error(ArgumentError)
+      expect { PcapHeader.new(:endian => :just_right) }.to raise_error(ArgumentError)
     end
   end
 
@@ -68,8 +69,8 @@ end
 
 describe Timestamp do
   before(:all) do
-    @file = File.open("test/sample.pcap") {|f| f.read}
-    @ts = @file[24,8]
+    @file = File.open("test/sample.pcap") { |f| f.read }
+    @ts = @file[24, 8]
   end
 
   context "when initializing" do
@@ -90,10 +91,10 @@ end
 
 describe PcapPacket do
   before(:all) do
-    @file = File.open('test/sample.pcap') {|f| f.read}
+    @file = File.open('test/sample.pcap') { |f| f.read }
     @file.force_encoding "binary" if @file.respond_to? :force_encoding
-    @header = @file[0,24]
-    @packet = @file[24,100] # pkt is 78 bytes + 16 bytes pcap hdr == 94
+    @header = @file[0, 24]
+    @packet = @file[24, 100] # pkt is 78 bytes + 16 bytes pcap hdr == 94
   end
 
   context "when initializing" do
@@ -130,14 +131,14 @@ describe PcapPacket do
       )
 
       expect(pcap_packet[:incl_len].to_i).to eql(78)
-      expect(pcap_packet.to_s).to eql(@packet[0,94])
+      expect(pcap_packet.to_s).to eql(@packet[0, 94])
     end
   end
 end
 
 describe PcapPackets do
   before(:all) do
-    @file = File.open('test/sample.pcap') {|f| f.read}
+    @file = File.open('test/sample.pcap') { |f| f.read }
   end
 
   context "when initializing" do
@@ -155,14 +156,14 @@ describe PcapPackets do
       pcap_packets.read @file
       expect(pcap_packets.size).to eql(11)
       expect(pcap_packets.size).to eql(11)
-      expect(pcap_packets.to_s).to eql(@file[24,@file.size])
+      expect(pcap_packets.to_s).to eql(@file[24, @file.size])
     end
   end
 end
 
 describe PcapFile do
   before(:all) do
-    @file = File.open('test/sample.pcap') {|f| f.read}
+    @file = File.open('test/sample.pcap') { |f| f.read }
     @md5 = '1be3b5082bb135c6f22de8801feb3495'
   end
 
@@ -183,7 +184,7 @@ describe PcapFile do
       pcap_file = PcapFile.new
       pcap_file.read @file
       pcap_file.to_file(:filename => @temp_file.path)
-      newfile = File.open(@temp_file.path) {|f| f.read(f.stat.size)}
+      newfile = File.open(@temp_file.path) { |f| f.read(f.stat.size) }
       newfile.force_encoding "binary" if newfile.respond_to? :force_encoding
       expect(newfile).to eql(@file)
 
@@ -196,10 +197,10 @@ describe PcapFile do
       # TODO: Figure out why this is failing to write properly when converted to a Tempfile
       File.unlink('out.pcap') if File.exist? 'out.pcap'
       pcaps = PcapFile.new.file_to_array(:filename => 'test/sample.pcap')
-      pcaps.each {|pkt|
+      pcaps.each { |pkt|
         packet = Packet.parse pkt
         packet.recalc
-        packet.to_f('out.pcap','a')
+        packet.to_f('out.pcap', 'a')
       }
       packet_array = PcapFile.new.f2a(:filename => 'out.pcap')
       expect(packet_array.size).to eql(11)
@@ -213,7 +214,7 @@ describe PcapFile do
 
       pcap_file = PcapFile.new
       pcap_file.a2f(:array => packet_array, :f => @temp_file.path, :ts_inc => 4,
-             :timestamp => Time.now.to_i - 1_000_000)
+                    :timestamp => Time.now.to_i - 1_000_000)
       diff_time = pcap_file.body[0].timestamp.sec.to_i - pcap_file.body[1].timestamp.sec.to_i
       expect(diff_time).to eql(-4)
 
@@ -221,7 +222,6 @@ describe PcapFile do
       expect(packet_array_2.size).to eql(11)
     end
   end
-
 end
 
 describe Read do

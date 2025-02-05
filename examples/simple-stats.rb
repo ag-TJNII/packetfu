@@ -20,7 +20,7 @@ require 'packetfu'
 # Takes a file name, parses the packets, and records the packet
 # type based on its PacketFu class.
 def count_packet_types(file)
-  file = File.open(file) {|f| f.read}
+  file = File.open(file) { |f| f.read }
   stats = {}
   count = 0
   pcapfile = PacketFu::PcapPackets.new
@@ -37,7 +37,7 @@ def count_packet_types(file)
     count += 1
     break if count >= 1_000
   end
-  stats.each_pair { |k,v| puts "%-12s: %4d" % [k,v] }
+  stats.each_pair { |k, v| puts "%-12s: %4d" % [k, v] }
 end
 
 if File.readable?(infile = (ARGV[0] || 'in.pcap'))

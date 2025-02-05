@@ -1,4 +1,5 @@
 # -*- coding: binary -*-
+
 require 'packetfu/protos/eth/header'
 require 'packetfu/protos/eth/mixin'
 
@@ -21,7 +22,7 @@ module PacketFu
   #  icmp_pkt.ip_saddr="1.2.3.4"
   #  icmp_pkt.ip_daddr="5.6.7.8"
   #
-  #  icmp_pkt.recalc	
+  #  icmp_pkt.recalc
   #  icmp_pkt.to_f('/tmp/icmp.pcap')
   #
   # == Parameters
@@ -46,11 +47,12 @@ module PacketFu
       return false unless str.size >= 38
       return false unless EthPacket.can_parse? str
       return false unless IPPacket.can_parse? str
-      return false unless str[23,1] == "\x01"
+      return false unless str[23, 1] == "\x01"
+
       return true
     end
 
-    def initialize(args={})
+    def initialize(args = {})
       @eth_header = EthHeader.new(args).read(args[:eth])
       @ip_header = IPHeader.new(args).read(args[:ip])
       @ip_header.ip_proto = 1

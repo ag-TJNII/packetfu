@@ -1,6 +1,6 @@
 # -*- coding: binary -*-
-module PacketFu
 
+module PacketFu
   # The Capture class is used to construct PcapRub objects in order to collect
   # packets from an interface.
   #
@@ -29,7 +29,7 @@ module PacketFu
     attr_accessor :array, :stream # Leave these public and open.
     attr_reader :iface, :snaplen, :promisc, :timeout, :filter
 
-    def initialize(args={})
+    def initialize(args = {})
       @array = [] # Where the packet array goes.
       @stream = [] # Where the stream goes.
       @iface = (args[:iface] || ENV['IFACE'] || PacketFu::Utils.default_int || "lo").to_s
@@ -41,11 +41,11 @@ module PacketFu
     end
 
     # Used by new().
-    def setup_params(args={})
+    def setup_params(args = {})
       filter = args[:filter] || args[:bpf] || @filter
       start = args[:start] || false
       capture if start
-      bpf(:filter=>filter) if filter
+      bpf(:filter => filter) if filter
     end
 
     # capture() initializes the @stream varaible. Valid arguments are:
@@ -54,29 +54,29 @@ module PacketFu
     #     Provide a bpf filter to enable for the capture. For example, 'ip and not tcp'
     #   :start
     #     When true, start capturing packets to the @stream variable. Defaults to true
-    def capture(args={})
+    def capture(args = {})
       if Process.euid.zero?
         filter = args[:filter] || args[:bpf] || @filter
         start = args[:start] || true
         if start
           begin
-            @stream = Pcap.open_live(@iface,@snaplen,@promisc,@timeout)
+            @stream = Pcap.open_live(@iface, @snaplen, @promisc, @timeout)
           rescue RuntimeError
             $stderr.print "Are you sure you're root? Error: "
             raise
           end
-          bpf(:filter=>filter) if filter
+          bpf(:filter => filter) if filter
         else
           @stream = []
         end
         @stream
       else
-        raise RuntimeError,"Not root, so can't capture packets. Error: "
+        raise RuntimeError, "Not root, so can't capture packets. Error: "
       end
     end
 
     # start() is equivalent to capture().
-    def start(args={})
+    def start(args = {})
       capture(args)
     end
 
@@ -87,7 +87,7 @@ module PacketFu
     #     If true, the @array is cleared.
     #   :stream
     #     If true, the @stream is cleared.
-    def clear(args={})
+    def clear(args = {})
       array = args[:array] || true
       stream = args[:stream] || true
       @array = [] if array
@@ -98,7 +98,7 @@ module PacketFu
     #
     #   :filter
     #     Provide a bpf filter to enable for the capture. For example, 'ip and not tcp'
-    def bpf(args={})
+    def bpf(args = {})
       filter = args[:filter] || args[:bpf] || @filter
       capture if @stream.class == Array
       @stream.setfilter(filter) if filter
@@ -114,9 +114,9 @@ module PacketFu
     #
     #   :filter
     #     Provide a bpf filter to apply to packets moving from @stream to @array.
-    def wire_to_array(args={})
+    def wire_to_array(args = {})
       filter = args[:filter] || args[:bpf] || @filter
-      bpf(:filter=>filter) if filter
+      bpf(:filter => filter) if filter
 
       while this_pkt = @stream.next
         @array << this_pkt
@@ -130,12 +130,12 @@ module PacketFu
     end
 
     # w2a() is a equivalent to wire_to_array()
-    def w2a(args={})
+    def w2a(args = {})
       wire_to_array(args)
     end
 
     # save() is a equivalent to wire_to_array()
-    def save(args={})
+    def save(args = {})
       wire_to_array(args)
     end
 
@@ -149,7 +149,7 @@ module PacketFu
     #     TODO: Not implemented yet; do more than just peek() at the packets.
     #   :quiet
     #     TODO: Not implemented yet; do less than peek() at the packets.
-    def show_live(args={})
+    def show_live(args = {})
       filter = args[:filter] || args[:bpf] || @filter
       save = args[:save]
       verbose = args[:verbose] || args[:v] || false
@@ -168,6 +168,5 @@ module PacketFu
         end
       end
     end
-
   end
 end
