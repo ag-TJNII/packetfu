@@ -272,7 +272,7 @@ class TCPPacketTest < Test::Unit::TestCase
     puts "\n"
     puts 'TCP Peek format: '
     puts t.peek
-    assert (t.peek.size <= 80)
+    assert(t.peek.size <= 80)
   end
 
   def test_tcp_pcap

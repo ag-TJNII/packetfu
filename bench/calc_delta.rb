@@ -13,5 +13,5 @@ after_data = Marshal.load(fio)
 fio.close
 
 before_data.each_with_index do |data, i|
-  puts (data.total / after_data[i].total)
+  puts(data.total / after_data[i].total)
 end
