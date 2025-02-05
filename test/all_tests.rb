@@ -14,7 +14,7 @@
 # and incidentally get the gem to test like it's supposed
 # to.
 
-$:.unshift File.expand_path(File.dirname(__FILE__) + "/../lib/")
+$:.unshift File.expand_path(File.dirname(__FILE__) + '/../lib/')
 require 'packetfu'
 puts "Testing PacketFu v#{PacketFu::VERSION}"
 dir = Dir.new(File.dirname(__FILE__))
@@ -30,9 +30,9 @@ dir.each { |file|
     puts "#{file}: All passed"
   else
     puts "File: #{file} had failures or errors:"
-    puts "-" * 80
+    puts '-' * 80
     puts cmd
-    puts "-" * 80
+    puts '-' * 80
   end
 }
 

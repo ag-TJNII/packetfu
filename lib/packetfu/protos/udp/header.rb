@@ -107,7 +107,7 @@ module PacketFu
     # Readability aliases
 
     def udp_sum_readable
-      "0x%04x" % udp_sum
+      '0x%04x' % udp_sum
     end
   end
 end

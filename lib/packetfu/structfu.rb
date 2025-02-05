@@ -28,7 +28,7 @@ module StructFu
     elsif i.kind_of? StructFu
       self[:body] = i
     elsif i.nil?
-      self[:body] = StructFu::String.new.read("")
+      self[:body] = StructFu::String.new.read('')
     else
       raise ArgumentError, "Can't cram a #{i.class} into a StructFu :body"
     end
@@ -68,7 +68,7 @@ module StructFu
 
     # This is a parent class definition and should not be used directly.
     def to_s
-      raise StandardError, "StructFu::Int#to_s accessed, must be redefined."
+      raise StandardError, 'StructFu::Int#to_s accessed, must be redefined.'
     end
 
     # Returns the Int as an Integer.
@@ -96,12 +96,12 @@ module StructFu
   class Int8 < Int
     def initialize(v = nil)
       super(v, nil, w = 1)
-      @packstr = "C"
+      @packstr = 'C'
     end
 
     # Returns a one byte value as a packed string.
     def to_s
-      [(self.v || self.d)].pack("C")
+      [(self.v || self.d)].pack('C')
     end
   end
 
@@ -109,12 +109,12 @@ module StructFu
   class Int16 < Int
     def initialize(v = nil, e = :big)
       super(v, e, w = 2)
-      @packstr = (self.e == :big) ? "n" : "v"
+      @packstr = (self.e == :big) ? 'n' : 'v'
     end
 
     # Returns a two byte value as a packed string.
     def to_s
-      @packstr = (self.e == :big) ? "n" : "v"
+      @packstr = (self.e == :big) ? 'n' : 'v'
       [(self.v || self.d)].pack(@packstr)
     end
   end
@@ -129,7 +129,7 @@ module StructFu
     undef :endian=
     def initialize(v = nil, e = :little)
       super(v, e)
-      @packstr = (self.e == :big) ? "n" : "v"
+      @packstr = (self.e == :big) ? 'n' : 'v'
     end
   end
 
@@ -137,12 +137,12 @@ module StructFu
   class Int32 < Int
     def initialize(v = nil, e = :big)
       super(v, e, w = 4)
-      @packstr = (self.e == :big) ? "N" : "V"
+      @packstr = (self.e == :big) ? 'N' : 'V'
     end
 
     # Returns a four byte value as a packed string.
     def to_s
-      @packstr = (self.e == :big) ? "N" : "V"
+      @packstr = (self.e == :big) ? 'N' : 'V'
       [(self.v || self.d)].pack(@packstr)
     end
   end
@@ -208,7 +208,7 @@ module StructFu
         super(int.new, string, mode)
         calc
       else
-        raise "IntStrings need a StructFu::Int for a length."
+        raise 'IntStrings need a StructFu::Int for a length.'
       end
     end
 

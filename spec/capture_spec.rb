@@ -15,15 +15,15 @@ include PacketFu
 
 describe Capture do
   if Process.uid != 0
-    warn "Not running as root, PacketFu::Capture capabilities that require root will be skipped"
+    warn 'Not running as root, PacketFu::Capture capabilities that require root will be skipped'
   end
 
-  context "when creating an object from scratch" do
+  context 'when creating an object from scratch' do
     before :each do
       @capture = PacketFu::Capture.new
     end
 
-    it "should have sane defaults" do
+    it 'should have sane defaults' do
       expect(@capture.array).to be_kind_of(Array)
       expect(@capture.stream).to be_kind_of(Array)
       expect(@capture.iface).to be_kind_of(String)
@@ -39,7 +39,7 @@ describe Capture do
       end
     end
 
-    it "should allow creating a capture object with non-std attributes" do
+    it 'should allow creating a capture object with non-std attributes' do
       # Can only run this if we're root
       if Process.uid == 0
         options = {
@@ -47,7 +47,7 @@ describe Capture do
           :snaplen => 0xfffe,
           :promisc => true,
           :timeout => 5,
-          :filter => "not port 22",
+          :filter => 'not port 22',
         }
         @capture = PacketFu::Capture.new(options)
 
@@ -63,10 +63,10 @@ describe Capture do
     end
   end
 
-  context "when capturing traffic on the wire" do
+  context 'when capturing traffic on the wire' do
     # Can only run this if we're root
     if Process.uid == 0
-      it "should capture an ICMP echo request from the wire" do
+      it 'should capture an ICMP echo request from the wire' do
         daddr = PacketFu::Utils.rand_routable_daddr.to_s
 
         def do_capture_test(daddr)
@@ -92,7 +92,7 @@ describe Capture do
         capture_thread.join
       end
 
-      it "should capture only capture ICMP echo requests we ask for from the wire" do
+      it 'should capture only capture ICMP echo requests we ask for from the wire' do
         daddr = PacketFu::Utils.rand_routable_daddr.to_s
         daddr2 = PacketFu::Utils.rand_routable_daddr.to_s
 

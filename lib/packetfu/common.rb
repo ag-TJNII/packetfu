@@ -30,10 +30,10 @@ module PacketFu
     pcaprub_regex = /[0-9]\.([8-9]|[1-7][0-9])(-dev)?/ # Regex for 0.8 and beyond.
     if Pcap.version !~ pcaprub_regex
       @pcaprub_loaded = false # Don't bother with broken versions
-      raise LoadError, "PcapRub not at a minimum version of 0.8-dev"
+      raise LoadError, 'PcapRub not at a minimum version of 0.8-dev'
     end
-    require "packetfu/capture"
-    require "packetfu/inject"
+    require 'packetfu/capture'
+    require 'packetfu/inject'
   end
 
   # Returns the status of pcaprub
@@ -48,7 +48,7 @@ module PacketFu
 
   # Adds the class to PacketFu's list of packet classes -- used in packet parsing.
   def self.add_packet_class(klass)
-    raise "Need a class" unless klass.kind_of? Class
+    raise 'Need a class' unless klass.kind_of? Class
     if klass.name !~ /[A-Za-z0-9]Packet/
       raise "Packet classes should be named 'ProtoPacket'"
     end
@@ -61,7 +61,7 @@ module PacketFu
 
   # Presumably, there may be a time where you'd like to remove a packet class.
   def self.remove_packet_class(klass)
-    raise "Need a class" unless klass.kind_of? Class
+    raise 'Need a class' unless klass.kind_of? Class
 
     @packet_classes ||= []
     @packet_classes.delete klass
@@ -103,7 +103,7 @@ module PacketFu
   end
 
   def self.reset_packet_groups
-    @packet_class_prefixes = @packet_classes.map { |p| p.to_s.split("::").last.to_s.downcase.gsub(/packet$/, "") }
+    @packet_class_prefixes = @packet_classes.map { |p| p.to_s.split('::').last.to_s.downcase.gsub(/packet$/, '') }
     @packet_classes_by_layer = @packet_classes.sort_by { |pclass| pclass.layer }.reverse
     @packet_classes_by_layer_without_application = @packet_classes_by_layer.reject { |pclass| pclass.layer_symbol == :application }
   end

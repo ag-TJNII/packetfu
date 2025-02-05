@@ -66,7 +66,7 @@ module PacketFu
     def icmpv6_sum; self[:icmpv6_sum].to_i; end
 
     def icmpv6_sum_readable
-      "0x%04x" % icmpv6_sum
+      '0x%04x' % icmpv6_sum
     end
   end
 end

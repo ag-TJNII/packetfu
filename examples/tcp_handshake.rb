@@ -9,7 +9,7 @@
 # iptables -A OUTPUT -p tcp --tcp-flags RST RST -j DROP
 
 # Path setting slight of hand:
-$: << File.expand_path("../../lib", __FILE__)
+$: << File.expand_path('../../lib', __FILE__)
 
 require 'packetfu'
 
@@ -51,7 +51,7 @@ capture_thread = Thread.new do
       end
     }
   rescue Timeout::Error
-    puts "SYN request timed out"
+    puts 'SYN request timed out'
   end
 end
 

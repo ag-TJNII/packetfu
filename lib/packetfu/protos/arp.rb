@@ -73,26 +73,26 @@ module PacketFu
 
     # Generates summary data for ARP packets.
     def peek_format
-      peek_data = ["A  "]
-      peek_data << "%-5d" % self.to_s.size
+      peek_data = ['A  ']
+      peek_data << '%-5d' % self.to_s.size
       peek_data << arp_saddr_mac
       peek_data << "(#{arp_saddr_ip})"
-      peek_data << "->"
+      peek_data << '->'
       peek_data << case arp_daddr_mac
-                   when "00:00:00:00:00:00"; "Bcast00"
-                   when "ff:ff:ff:ff:ff:ff"; "BcastFF"
+                   when '00:00:00:00:00:00'; 'Bcast00'
+                   when 'ff:ff:ff:ff:ff:ff'; 'BcastFF'
                    else; arp_daddr_mac
                    end
       peek_data << "(#{arp_daddr_ip})"
-      peek_data << ":"
+      peek_data << ':'
       peek_data << case arp_opcode
-                   when 1; "Requ"
-                   when 2; "Repl"
-                   when 3; "RReq"
-                   when 4; "RRpl"
-                   when 5; "IReq"
-                   when 6; "IRpl"
-                   else; "0x%02x" % arp_opcode
+                   when 1; 'Requ'
+                   when 2; 'Repl'
+                   when 3; 'RReq'
+                   when 4; 'RRpl'
+                   when 5; 'IReq'
+                   when 6; 'IRpl'
+                   else; '0x%02x' % arp_opcode
                    end
       peek_data.join
     end

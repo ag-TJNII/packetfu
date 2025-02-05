@@ -16,16 +16,16 @@ module PacketFu
       Int8.new(args[:lldp_port_id_type] || 3),
       EthMac.new.read(src_mac),
       Int16.new(args[:lldp_ttl] || 120),
-      StructFu::String.new.read(:lldp_port_description) || "",
-      StructFu::String.new.read(:lldp_system_name) || "",
-      StructFu::String.new.read(:lldp_system_description) || "",
+      StructFu::String.new.read(:lldp_port_description) || '',
+      StructFu::String.new.read(:lldp_system_name) || '',
+      StructFu::String.new.read(:lldp_system_description) || '',
       Int16.new(args[:lldp_capabilty] || 0x0080),
       Int16.new(args[:lldp_enabled_capability] || 0x0080),
       Int8.new(args[:lldp_address_type] || 1),
       StructFu::String.new.read(:lldp_address) || src_ip_bin,
       Int8.new(args[:lldp_interface_type] || 2),
       Int32.new(args[:lldp_interface]),
-      StructFu::String.new.read(:lldp_oid) || ""
+      StructFu::String.new.read(:lldp_oid) || ''
       )
     end
 
@@ -46,7 +46,7 @@ module PacketFu
         # chassis subtype
         if str[index, 1] == "\x02"
           tlv_known = true
-          tlv_length = str[index + 1, 1].unpack("U*").join.to_i
+          tlv_length = str[index + 1, 1].unpack('U*').join.to_i
           self[:lldp_chassis_id_type].read(str[index + 2, 1])
           self[:lldp_chassis_id].read(str[index + 3, tlv_length - 1])
           index += tlv_length + 2
@@ -54,7 +54,7 @@ module PacketFu
         # port subtype
         if str[index, 1] == "\x04"
           tlv_known = true
-          tlv_length = str[index + 1, 1].unpack("U*").join.to_i
+          tlv_length = str[index + 1, 1].unpack('U*').join.to_i
           self[:lldp_port_id_type].read(str[index + 2, 1])
           self[:lldp_port_id].read(str[index + 3, tlv_length - 1])
           index += tlv_length + 2
@@ -62,35 +62,35 @@ module PacketFu
         # ttl subtype
         if str[index, 1] == "\x06"
           tlv_known = true
-          tlv_length = str[index + 1, 1].unpack("U*").join.to_i
+          tlv_length = str[index + 1, 1].unpack('U*').join.to_i
           self[:lldp_ttl].read(str[index + 2, tlv_length])
           index += tlv_length + 2
         end
         # port description
         if str[index, 1] == "\x08"
           tlv_known = true
-          tlv_length = str[index + 1, 1].unpack("U*").join.to_i
+          tlv_length = str[index + 1, 1].unpack('U*').join.to_i
           self[:lldp_port_description].read(str[index + 2, tlv_length])
           index += tlv_length + 2
         end
         # system name
         if str[index, 1] == "\x0a"
           tlv_known = true
-          tlv_length = str[index + 1, 1].unpack("U*").join.to_i
+          tlv_length = str[index + 1, 1].unpack('U*').join.to_i
           self[:lldp_system_name].read(str[index + 2, tlv_length])
           index += tlv_length + 2
         end
         # system description
         if str[index, 1] == "\x0c"
           tlv_known = true
-          tlv_length = str[index + 1, 1].unpack("U*").join.to_i
+          tlv_length = str[index + 1, 1].unpack('U*').join.to_i
           self[:lldp_system_description].read(str[index + 2, tlv_length])
           index += tlv_length + 2
         end
         # system capabilities
         if str[index, 1] == "\x0e"
           tlv_known = true
-          tlv_length = str[index + 1, 1].unpack("U*").join.to_i
+          tlv_length = str[index + 1, 1].unpack('U*').join.to_i
           self[:lldp_capabilty].read(str[index + 2, 2])
           self[:lldp_enabled_capability].read(str[index + 4, 2])
           index += tlv_length + 2
@@ -98,13 +98,13 @@ module PacketFu
         # management address
         if str[index, 1] == "\x10"
           tlv_known = true
-          tlv_length = str[index + 1, 1].unpack("U*").join.to_i
-          addr_length = str[index + 2, 1].unpack("U*").join.to_i
+          tlv_length = str[index + 1, 1].unpack('U*').join.to_i
+          addr_length = str[index + 2, 1].unpack('U*').join.to_i
           self[:lldp_address_type].read(str[index + 3, 1])
           self[:lldp_address].read(str[index + 4, addr_length - 1])
-          self[:lldp_interface_type].read(str[index + addr_length + 3, 1].unpack("U*").join.to_i)
+          self[:lldp_interface_type].read(str[index + addr_length + 3, 1].unpack('U*').join.to_i)
           self[:lldp_interface].read(str[index + addr_length + 4, 4])
-          oid_string_length = str[index + addr_length + 8, 1].unpack("U*").join.to_i
+          oid_string_length = str[index + addr_length + 8, 1].unpack('U*').join.to_i
           if oid_string_length > 0
             self[:lldp_oid].read(str[index + addr_length + 9, oid_string_length])
           end
@@ -113,7 +113,7 @@ module PacketFu
 
         # if tlv type is unknown jump over it
         unless tlv_known
-          tlv_length = str[index + 1, 1].unpack("U*").join.to_i
+          tlv_length = str[index + 1, 1].unpack('U*').join.to_i
           index += tlv_length + 2
         end
       end
@@ -248,22 +248,22 @@ module PacketFu
     def lldp_address_type_readable
       case lldp_address_type
       when 1
-        "IPv4"
+        'IPv4'
       when 2
-        "IPv6"
+        'IPv6'
       when 6
-        "MAC"
+        'MAC'
       else
         lldp_address_type
       end
     end
 
     def lldp_capabilty_readable
-      "0x%04x" % lldp_capabilty
+      '0x%04x' % lldp_capabilty
     end
 
     def lldp_enabled_capability_readable
-      "0x%04x" % lldp_enabled_capability
+      '0x%04x' % lldp_enabled_capability
     end
 
     # Readability aliases

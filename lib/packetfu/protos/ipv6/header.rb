@@ -96,7 +96,7 @@ module PacketFu
     def to_s
       bytes_v_class_label = [(self.ipv6_v << 28) +
         (self.ipv6_class << 20) +
-        self.ipv6_label].pack("N")
+        self.ipv6_label].pack('N')
       bytes_v_class_label + (self.to_a[3, 6].map { |x| x.to_s }.join)
     end
 
@@ -105,9 +105,9 @@ module PacketFu
       force_binary(str)
       return self if str.nil?
 
-      self[:ipv6_v] = str[0, 1].unpack("C").first >> 4
-      self[:ipv6_class] = (str[0, 2].unpack("n").first & 0x0ff0) >> 4
-      self[:ipv6_label] = str[0, 4].unpack("N").first & 0x000fffff
+      self[:ipv6_v] = str[0, 1].unpack('C').first >> 4
+      self[:ipv6_class] = (str[0, 2].unpack('n').first & 0x0ff0) >> 4
+      self[:ipv6_label] = str[0, 4].unpack('N').first & 0x000fffff
       self[:ipv6_len].read(str[4, 2])
       self[:ipv6_next].read(str[6, 1])
       self[:ipv6_hop].read(str[7, 1])

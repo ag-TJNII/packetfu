@@ -3,7 +3,7 @@
 # rvmsudo ruby examples/readpcap.rb test.pcap test.pcap
 
 # Path setting slight of hand:
-$: << File.expand_path("../../lib", __FILE__)
+$: << File.expand_path('../../lib', __FILE__)
 
 require 'packetfu'
 include PacketFu

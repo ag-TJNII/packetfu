@@ -34,20 +34,20 @@ module PacketFu
 
     def initialize(args = {})
       if Process.euid.zero?
-        @iface = args[:iface] || ENV['IFACE'] || Pcap.lookupdev || "lo"
+        @iface = args[:iface] || ENV['IFACE'] || Pcap.lookupdev || 'lo'
       end
-      @pcapfile = "/tmp/out.pcap"
+      @pcapfile = '/tmp/out.pcap'
       args.each_pair { |k, v| self.instance_variable_set(("@#{k}"), v) }
     end
 
     # Returns all instance variables as a hash (including custom variables set at initialization).
     def config(arg = nil)
       if arg
-        arg.each_pair { |k, v| self.instance_variable_set(("@" + k.to_s).to_sym, v) }
+        arg.each_pair { |k, v| self.instance_variable_set(('@' + k.to_s).to_sym, v) }
       else
         config_hash = {}
         self.instance_variables.each do |v|
-          key = v.to_s.gsub(/^@/, "").to_sym
+          key = v.to_s.gsub(/^@/, '').to_sym
           config_hash[key] = self.instance_variable_get(v)
         end
         config_hash

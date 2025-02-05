@@ -76,12 +76,12 @@ module PacketFu
 
     # Peek provides summary data on packet contents.
     def peek_format
-      peek_data = ["UH "]
-      peek_data << "%-5d" % self.to_s.size
-      peek_data << "%-16s" % self.hsrp_addr
-      peek_data << "%-4d" % self.hsrp_group
-      peek_data << "%-35s" % self.hsrp_password_readable
-      peek_data << "%-15s" % self.ip_saddr
+      peek_data = ['UH ']
+      peek_data << '%-5d' % self.to_s.size
+      peek_data << '%-16s' % self.hsrp_addr
+      peek_data << '%-4d' % self.hsrp_group
+      peek_data << '%-35s' % self.hsrp_password_readable
+      peek_data << '%-15s' % self.ip_saddr
       peek_data.join
     end
   end

@@ -69,7 +69,7 @@ module PacketFu
       bytes[1] = (self[:tcp_ecn].c.to_i << 7) +
                  (self[:tcp_ecn].e.to_i << 6) +
                  self[:tcp_flags].to_i
-      bytes.pack("CC")
+      bytes.pack('CC')
     end
 
     # Returns the object in string form.
@@ -252,7 +252,7 @@ module PacketFu
     def tcp_flags_dotmap
       dotmap = tcp_flags.members.map do |flag|
         status = self.tcp_flags.send flag
-        status == 0 ? "." : flag.to_s.upcase[0].chr
+        status == 0 ? '.' : flag.to_s.upcase[0].chr
       end
       dotmap.join
     end
@@ -307,15 +307,15 @@ module PacketFu
     alias :tcp_flags_readable :tcp_flags_dotmap
 
     def tcp_ack_readable
-      "0x%08x" % tcp_ack
+      '0x%08x' % tcp_ack
     end
 
     def tcp_seq_readable
-      "0x%08x" % tcp_seq
+      '0x%08x' % tcp_seq
     end
 
     def tcp_sum_readable
-      "0x%04x" % tcp_sum
+      '0x%04x' % tcp_sum
     end
 
     def tcp_opts_readable

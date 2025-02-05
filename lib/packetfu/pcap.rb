@@ -45,8 +45,8 @@ module PacketFu
     include StructFu
 
     MAGIC_INT32  = 0xa1b2c3d4
-    MAGIC_LITTLE = [MAGIC_INT32].pack("V")
-    MAGIC_BIG    = [MAGIC_INT32].pack("N")
+    MAGIC_LITTLE = [MAGIC_INT32].pack('V')
+    MAGIC_BIG    = [MAGIC_INT32].pack('N')
 
     def initialize(args = {})
       set_endianness(args[:endian] ||= :little)
@@ -90,7 +90,7 @@ module PacketFu
         self[:snaplen].read str[16, 4]
         self[:network].read str[20, 4]
       else
-        raise "Incorrect magic for libpcap"
+        raise 'Incorrect magic for libpcap'
       end
       self
     end
@@ -252,7 +252,7 @@ module PacketFu
         end
 
         begin
-          file_handle = File.open(fname, "rb")
+          file_handle = File.open(fname, 'rb')
           file_header.read file_handle.read(24)
           packet_count = 0
           pcap_packet = PcapPacket.new(:endian => file_header.endian)
@@ -359,20 +359,20 @@ module PacketFu
     # that readfile clears any existing packets, since that seems to be the
     # typical use.
     def readfile(file)
-      fdata = File.open(file, "rb") { |f| f.read }
+      fdata = File.open(file, 'rb') { |f| f.read }
       self.read! fdata
     end
 
     # Calls the class method with this object's @filename
     def read_packet_bytes(fname = @filename, &block)
-      raise ArgumentError, "Need a file" unless fname
+      raise ArgumentError, 'Need a file' unless fname
 
       return self.class.read_packet_bytes(fname, &block)
     end
 
     # Calls the class method with this object's @filename
     def read_packets(fname = @filename, &block)
-      raise ArgumentError, "Need a file" unless fname
+      raise ArgumentError, 'Need a file' unless fname
 
       return self.class.read_packets(fname, &block)
     end
@@ -384,7 +384,7 @@ module PacketFu
     def file_to_array(args = {})
       filename = args[:filename] || args[:file] || args[:f]
       if filename
-        self.read! File.open(filename, "rb") { |f| f.read }
+        self.read! File.open(filename, 'rb') { |f| f.read }
       end
       if args[:keep_timestamps] || args[:keep_ts] || args[:ts]
         self[:body].map { |x| { x.timestamp.to_s => x.data.to_s } }
@@ -414,10 +414,10 @@ module PacketFu
         arr = args
         filename = append = nil
       else
-        raise ArgumentError, "Unknown argument. Need either a Hash or Array."
+        raise ArgumentError, 'Unknown argument. Need either a Hash or Array.'
       end
       unless arr.kind_of? Array
-        raise ArgumentError, "Need an array to read packets from"
+        raise ArgumentError, 'Need an array to read packets from'
       end
 
       arr.each_with_index do |p, i|
@@ -528,7 +528,7 @@ module PacketFu
       # using the PcapFile object is going to be more useful.
       def file_to_array(args = {})
         filename = args[:filename] || args[:file] || args[:out]
-        raise ArgumentError, "Need a :filename in string form to read from." if (filename.nil? || filename.class != String)
+        raise ArgumentError, 'Need a :filename in string form to read from.' if (filename.nil? || filename.class != String)
 
         PcapFile.new.file_to_array(args)
       end

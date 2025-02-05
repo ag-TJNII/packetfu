@@ -5,14 +5,14 @@
 # rvmsudo ruby examples/idsv2.rb
 
 # Path setting slight of hand:
-$: << File.expand_path("../../lib", __FILE__)
+$: << File.expand_path('../../lib', __FILE__)
 require 'packetfu'
 
 iface = ARGV[0] || PacketFu::Utils.default_int
 
-cap = PacketFu::Capture.new(:iface => iface, :start => true, :filter => "ip")
+cap = PacketFu::Capture.new(:iface => iface, :start => true, :filter => 'ip')
 
-attack_patterns = ["^gotcha", "owned!*$", "^\x04[^\x00]{50}"]
+attack_patterns = ['^gotcha', 'owned!*$', "^\x04[^\x00]{50}"]
 
 loop do
   cap.stream.each do |pkt|

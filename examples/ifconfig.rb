@@ -4,7 +4,7 @@
 # ruby examples/ifconfig.rb
 
 # Path setting slight of hand:
-$: << File.expand_path("../../lib", __FILE__)
+$: << File.expand_path('../../lib', __FILE__)
 require 'packetfu'
 
 iface = ARGV[0] || PacketFu::Utils.default_int

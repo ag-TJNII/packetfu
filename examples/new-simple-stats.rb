@@ -13,11 +13,11 @@
 # ruby examples/new-simple-stats.rb test/sample.pcap
 
 # Path setting slight of hand:
-$: << File.expand_path("../../lib", __FILE__)
+$: << File.expand_path('../../lib', __FILE__)
 require 'packetfu'
 
 def print_results(stats)
-  stats.each_pair { |k, v| puts "%-12s: %10d" % [k, v] }
+  stats.each_pair { |k, v| puts '%-12s: %10d' % [k, v] }
 end
 
 # Takes a file name, parses the packets, and records the packet
@@ -43,9 +43,9 @@ end
 
 if File.readable?(infile = (ARGV[0] || 'in.pcap'))
   title = "Packets by packet type in '#{infile}'"
-  puts "-" * title.size
+  puts '-' * title.size
   puts title
-  puts "-" * title.size
+  puts '-' * title.size
   count_packet_types(infile)
 else
   raise RuntimeError, "Need an infile, like so: #{$0} in.pcap"

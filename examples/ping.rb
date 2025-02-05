@@ -2,7 +2,7 @@
 # rvmsudo ruby examples/ping.rb 8.8.8.8
 
 # Path setting slight of hand:
-$: << File.expand_path("../../lib", __FILE__)
+$: << File.expand_path('../../lib', __FILE__)
 
 require 'packetfu'
 
@@ -31,7 +31,7 @@ capture_thread = Thread.new do
       end
     }
   rescue Timeout::Error
-    puts "ICMP echo request timed out"
+    puts 'ICMP echo request timed out'
   end
 end
 

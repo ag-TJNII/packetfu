@@ -7,14 +7,14 @@
 # MAC address of a target IP turns out to be pretty useful day-to-day.
 
 # Path setting slight of hand:
-$: << File.expand_path("../../lib", __FILE__)
+$: << File.expand_path('../../lib', __FILE__)
 require 'packetfu'
 
 def usage
   if ARGV[0].nil?
-    raise ArgumentError, "You need an IP address to start with."
+    raise ArgumentError, 'You need an IP address to start with.'
   elsif !Process.euid.zero?
-    raise SecurityError, "You need to be root to run this."
+    raise SecurityError, 'You need to be root to run this.'
   end
 end
 
@@ -25,10 +25,10 @@ IPAddr.new(target_ip)	# Check to see it's really an IP address, and not a herrin
 $packetfu_default = PacketFu::Config.new(PacketFu::Utils.whoami?).config
 
 def arp(target_ip)
-  arp_pkt = PacketFu::ARPPacket.new(:flavor => "Windows")
+  arp_pkt = PacketFu::ARPPacket.new(:flavor => 'Windows')
   arp_pkt.eth_saddr = arp_pkt.arp_saddr_mac = $packetfu_default[:eth_saddr]
-  arp_pkt.eth_daddr = "ff:ff:ff:ff:ff:ff"
-  arp_pkt.arp_daddr_mac = "00:00:00:00:00:00"
+  arp_pkt.eth_daddr = 'ff:ff:ff:ff:ff:ff'
+  arp_pkt.arp_daddr_mac = '00:00:00:00:00:00'
 
   arp_pkt.arp_saddr_ip = $packetfu_default[:ip_saddr]
   arp_pkt.arp_daddr_ip = target_ip

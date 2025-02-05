@@ -2,7 +2,7 @@
 # -*- coding: binary -*-
 
 require 'test/unit'
-$:.unshift File.expand_path(File.join(File.dirname(__FILE__), "..", "lib"))
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'packetfu'
 
 class NewPacketTest < Test::Unit::TestCase
@@ -144,7 +144,7 @@ class PacketParsersTest < Test::Unit::TestCase
     p = Packet.parse(pcaps[0]) # Really an IPv6 packet
     assert_equal(p.to_s, pcaps[0])
     assert_kind_of(EthPacket, p)
-    assert(!p.kind_of?(IPPacket), "Misidentified as an IP Packet!")
+    assert(!p.kind_of?(IPPacket), 'Misidentified as an IP Packet!')
     assert_kind_of(IPv6Packet, p)
   end
 

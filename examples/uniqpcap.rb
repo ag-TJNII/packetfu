@@ -12,7 +12,7 @@
 # ruby examples/uniqcap.rb test/sample.pcap
 
 # Path setting slight of hand:
-$: << File.expand_path("../../lib", __FILE__)
+$: << File.expand_path('../../lib', __FILE__)
 require 'packetfu'
 
 pcap_file = ARGV[0].chomp
@@ -22,4 +22,4 @@ in_array = PacketFu::Read.f2a(:file => pcap_file)
 puts "Original Packets: #{in_array.size}"
 puts "Uniq'd Packets: #{in_array.uniq.size}"
 
-puts PacketFu::Write.a2f(:file => pcap_file + ".uniq", :arr => in_array.uniq).inspect
+puts PacketFu::Write.a2f(:file => pcap_file + '.uniq', :arr => in_array.uniq).inspect

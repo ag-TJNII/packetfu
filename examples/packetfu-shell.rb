@@ -4,7 +4,7 @@
 # rvmsudo ruby examples/packetfu-shell.rb
 
 # Path setting slight of hand:
-$: << File.expand_path("../../lib", __FILE__)
+$: << File.expand_path('../../lib', __FILE__)
 
 require 'packetfu'
 require 'irb'
@@ -52,18 +52,18 @@ def banner
   packetfu_ascii_art
   puts ">>> PacketFu Shell #{PacketFu.version}."
   if Process.euid.zero? && @pcaprub_loaded
-    puts ">>> Use $packetfu_default.config for salient networking details."
-    print "IP:  %-15s Mac: %s" % [$packetfu_default.ip_saddr, $packetfu_default.eth_saddr]
-    puts "   Gateway: %s" % $packetfu_default.eth_daddr
-    print "Net: %-15s" % [Pcap.lookupnet($packetfu_default.iface)][0]
-    print "  " * 13
-    puts "Iface:   %s" % [($packetfu_default.iface)]
-    puts ">>> Packet capturing/injecting enabled."
+    puts '>>> Use $packetfu_default.config for salient networking details.'
+    print 'IP:  %-15s Mac: %s' % [$packetfu_default.ip_saddr, $packetfu_default.eth_saddr]
+    puts '   Gateway: %s' % $packetfu_default.eth_daddr
+    print 'Net: %-15s' % [Pcap.lookupnet($packetfu_default.iface)][0]
+    print '  ' * 13
+    puts 'Iface:   %s' % [($packetfu_default.iface)]
+    puts '>>> Packet capturing/injecting enabled.'
   else
-    print ">>> Packet capturing/injecting disabled. "
-    puts Process.euid.zero? ? "(no PcapRub)" : "(not root)"
+    print '>>> Packet capturing/injecting disabled. '
+    puts Process.euid.zero? ? '(no PcapRub)' : '(not root)'
   end
-  puts "<>" * 36
+  puts '<>' * 36
 end
 
 # Silly wlan0 workaround

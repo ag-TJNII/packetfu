@@ -173,7 +173,7 @@ module PacketFu
     alias :arp_dst_ip_readable :arp_daddr_ip
 
     def arp_proto_readable
-      "0x%04x" % arp_proto
+      '0x%04x' % arp_proto
     end
   end # class ARPHeader
 end

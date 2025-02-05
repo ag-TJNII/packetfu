@@ -19,7 +19,7 @@ module PacketFu
 
     # Returns the object in string form.
     def to_s
-      [self[:ip_addr].to_i].pack("N")
+      [self[:ip_addr].to_i].pack('N')
     end
 
     # Reads a string to populate the object.
@@ -47,7 +47,7 @@ module PacketFu
     def read_quad(str)
       match = IPV4_RE.match(str)
       if match.nil?
-        raise ArgumentError.new("str is not a valid IPV4 address")
+        raise ArgumentError.new('str is not a valid IPV4 address')
       end
 
       a = match[1].to_i
@@ -58,7 +58,7 @@ module PacketFu
               b >= 0 && b <= 255 &&
               c >= 0 && c <= 255 &&
               d >= 0 && d <= 255)
-        raise ArgumentError.new("str is not a valid IPV4 address")
+        raise ArgumentError.new('str is not a valid IPV4 address')
       end
 
       self[:ip_addr].value = (a << 24) + (b << 16) + (c << 8) + d
@@ -144,7 +144,7 @@ module PacketFu
 
     # Returns the object in string form.
     def to_s
-      byte_v_hl = [(self.ip_v << 4) + self.ip_hl].pack("C")
+      byte_v_hl = [(self.ip_v << 4) + self.ip_hl].pack('C')
       byte_v_hl + (self.to_a[2, 10].map { |x| x.to_s }.join)
     end
 
@@ -153,8 +153,8 @@ module PacketFu
       force_binary(str)
       return self if str.nil?
 
-      self[:ip_v] = str[0, 1].unpack("C").first >> 4
-      self[:ip_hl] = str[0, 1].unpack("C").first.to_i & 0x0f
+      self[:ip_v] = str[0, 1].unpack('C').first >> 4
+      self[:ip_hl] = str[0, 1].unpack('C').first.to_i & 0x0f
       self[:ip_tos].read(str[1, 1])
       self[:ip_len].read(str[2, 2])
       self[:ip_id].read(str[4, 2])
@@ -226,7 +226,7 @@ module PacketFu
     def ip_src=(i)
       case i
       when Numeric
-        self[:ip_src] = Octets.new.read([i].pack("N"))
+        self[:ip_src] = Octets.new.read([i].pack('N'))
       when Octets
         self[:ip_src] = i
       else
@@ -241,7 +241,7 @@ module PacketFu
     def ip_dst=(i)
       case i
       when Numeric
-        self[:ip_dst] = Octets.new.read([i].pack("N"))
+        self[:ip_dst] = Octets.new.read([i].pack('N'))
       when Octets
         self[:ip_dst] = i
       else
@@ -315,7 +315,7 @@ module PacketFu
       elsif addr.kind_of? Array
         oa = addr
       else
-        raise ArgumentError, "IP Address should be a dotted quad string, an array of ints, or a bignum"
+        raise ArgumentError, 'IP Address should be a dotted quad string, an array of ints, or a bignum'
       end
     end
 
@@ -347,11 +347,11 @@ module PacketFu
     alias :ip_dst_readable :ip_daddr
 
     def ip_id_readable
-      "0x%04x" % ip_id
+      '0x%04x' % ip_id
     end
 
     def ip_sum_readable
-      "0x%04x" % ip_sum
+      '0x%04x' % ip_sum
     end
   end
 end

@@ -5,7 +5,7 @@
 # rvmsudo ruby examples/simple-sniffer.rb
 
 # Path setting slight of hand:
-$: << File.expand_path("../../lib", __FILE__)
+$: << File.expand_path('../../lib', __FILE__)
 require 'packetfu'
 
 puts "Simple sniffer for PacketFu #{PacketFu.version}"
@@ -20,7 +20,7 @@ def sniff(iface)
       next if pkt.ip_saddr == Utils.ifconfig(iface)[:ip_saddr]
 
       packet_info = [pkt.ip_saddr, pkt.ip_daddr, pkt.size, pkt.proto.last]
-      puts "%-15s -> %-15s %-4d %s" % packet_info
+      puts '%-15s -> %-15s %-4d %s' % packet_info
     end
   end
 end

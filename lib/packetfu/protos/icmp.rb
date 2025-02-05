@@ -67,21 +67,21 @@ module PacketFu
 
     # Peek provides summary data on packet contents.
     def peek_format
-      peek_data = ["IC "] # I is taken by IP
-      peek_data << "%-5d" % self.to_s.size
+      peek_data = ['IC '] # I is taken by IP
+      peek_data << '%-5d' % self.to_s.size
       type = case self.icmp_type.to_i
              when 8
-               "ping"
+               'ping'
              when 0
-               "pong"
+               'pong'
              else
-               "%02x-%02x" % [self.icmp_type, self.icmp_code]
+               '%02x-%02x' % [self.icmp_type, self.icmp_code]
              end
-      peek_data << "%-21s" % "#{self.ip_saddr}:#{type}"
-      peek_data << "->"
-      peek_data << "%21s" % "#{self.ip_daddr}"
-      peek_data << "%23s" % "I:"
-      peek_data << "%04x" % self.ip_id
+      peek_data << '%-21s' % "#{self.ip_saddr}:#{type}"
+      peek_data << '->'
+      peek_data << '%21s' % "#{self.ip_daddr}"
+      peek_data << '%23s' % 'I:'
+      peek_data << '%04x' % self.ip_id
       peek_data.join
     end
   end

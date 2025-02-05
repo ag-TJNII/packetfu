@@ -35,7 +35,7 @@ module PacketFu
 
     # Returns the object in string form.
     def to_s
-      [self.to_i].pack("C")
+      [self.to_i].pack('C')
     end
   end
 end

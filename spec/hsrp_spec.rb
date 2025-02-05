@@ -5,7 +5,7 @@ require 'packetfu'
 
 include PacketFu
 
-context "when parsing HSRP traffic from pcap" do
+context 'when parsing HSRP traffic from pcap' do
   it "should detect that it's HSRP traffic" do
     sample_packet = PcapFile.new.file_to_array(:f => 'test/sample_hsrp_pcapr.cap')[0]
     pkt = Packet.parse(sample_packet)

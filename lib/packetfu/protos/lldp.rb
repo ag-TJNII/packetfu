@@ -35,12 +35,12 @@ module PacketFu
 
     # Generates summary data for LLDP packets.
     def peek_format
-      peek_data = ["A  "]
-      peek_data << "%-5d" % self.to_s.size
+      peek_data = ['A  ']
+      peek_data << '%-5d' % self.to_s.size
       peek_data << lldp_saddr_mac
       peek_data << "(#{lldp_saddr_mac})"
-      peek_data << "->"
-      peek_data << "01:80:c2:00:00:0e"
+      peek_data << '->'
+      peek_data << '01:80:c2:00:00:0e'
       peek_data.join
     end
 

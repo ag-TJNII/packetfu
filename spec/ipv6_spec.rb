@@ -7,12 +7,12 @@ require 'packetfu/pcap'
 include PacketFu
 
 describe IPv6Header do
-  context "when initializing an IPv6Header" do
+  context 'when initializing an IPv6Header' do
     before :each do
       @ipv6_header = IPv6Header.new
     end
 
-    it "should contain sane defaults" do
+    it 'should contain sane defaults' do
       expect(@ipv6_header.ipv6_v).to eql(6)
       expect(@ipv6_header.ipv6_len).to eql(0)
       expect(@ipv6_header.ipv6_src).to eql(0)
@@ -24,21 +24,21 @@ describe IPv6Header do
 end
 
 describe AddrIpv6 do
-  context "when parsing IPv6 from wire" do
+  context 'when parsing IPv6 from wire' do
     before :each do
       @address_ipv6 = AddrIpv6.new
     end
 
-    it "should parse an IPv6 address from string i/o" do
+    it 'should parse an IPv6 address from string i/o' do
       raw_addr_ipv6 = "\xfe\x80\x00\x00\x00\x00\x00\x00\x02\x1a\xc5\xff\xfe\x00\x01\x52"
       @address_ipv6.read(raw_addr_ipv6)
 
       expect(@address_ipv6.to_i).to eql(338288524927261089654170548082086773074)
-      expect(@address_ipv6.to_x).to eql("fe80::21a:c5ff:fe00:152")
+      expect(@address_ipv6.to_x).to eql('fe80::21a:c5ff:fe00:152')
     end
 
-    it "should parse an IPv6 address from octet string" do
-      ipv6_string = "fe80::21a:c5ff:fe00:152"
+    it 'should parse an IPv6 address from octet string' do
+      ipv6_string = 'fe80::21a:c5ff:fe00:152'
       @address_ipv6.read_x(ipv6_string)
 
       expect(@address_ipv6.to_x).to eql(ipv6_string)
@@ -47,18 +47,18 @@ describe AddrIpv6 do
 end
 
 describe IPv6Packet do
-  context "when initializing an IPv6Packet" do
+  context 'when initializing an IPv6Packet' do
     before :each do
       @ipv6_packet = IPv6Packet.new
     end
 
-    it "should contain sane defaults" do
+    it 'should contain sane defaults' do
       expect(@ipv6_packet.ipv6_v).to eql(6)
-      expect(@ipv6_packet.payload).to eql("")
+      expect(@ipv6_packet.payload).to eql('')
       expect(@ipv6_packet.is_ipv6?).to be true
     end
 
-    it "should support peek functionality" do
+    it 'should support peek functionality' do
       expect(@ipv6_packet.peek).to match(/6\s+54\s+::\s+\->\s+::\s+N:0/)
     end
 

@@ -122,22 +122,22 @@ module PacketFu
       ts_val = Time.now.to_i + rand(0x4fffffff)
       ts_sec = rand(0xffffff)
       case @tcp_header.flavor = str.to_s.downcase
-      when "windows" # WinXP's default syn
+      when 'windows' # WinXP's default syn
         @tcp_header.tcp_win = 0x4000
-        @tcp_header.tcp_options = "MSS:1460,NOP,NOP,SACKOK"
+        @tcp_header.tcp_options = 'MSS:1460,NOP,NOP,SACKOK'
         @tcp_header.tcp_src = rand(5000 - 1026) + 1026
         @ip_header.ip_ttl = 64
-      when "linux" # Ubuntu Linux 2.6.24-19-generic default syn
+      when 'linux' # Ubuntu Linux 2.6.24-19-generic default syn
         @tcp_header.tcp_win = 5840
         @tcp_header.tcp_options = "MSS:1460,SACKOK,TS:#{ts_val};0,NOP,WS:7"
         @tcp_header.tcp_src = rand(61_000 - 32_000) + 32_000
         @ip_header.ip_ttl = 64
-      when "freebsd" # Freebsd
+      when 'freebsd' # Freebsd
         @tcp_header.tcp_win = 0xffff
         @tcp_header.tcp_options = "MSS:1460,NOP,WS:3,NOP,NOP,TS:#{ts_val};#{ts_sec},SACKOK,EOL,EOL"
         @ip_header.ip_ttl = 64
       else
-        @tcp_header.tcp_options = "MSS:1460,NOP,NOP,SACKOK"
+        @tcp_header.tcp_options = 'MSS:1460,NOP,NOP,SACKOK'
       end
       tcp_calc_sum
     end
@@ -174,14 +174,14 @@ module PacketFu
       checksum += tcp_urg
 
       chk_tcp_opts = (tcp_opts.to_s.size % 2 == 0 ? tcp_opts.to_s : tcp_opts.to_s + "\x00")
-      chk_tcp_opts.unpack("n*").each { |x| checksum = checksum + x }
+      chk_tcp_opts.unpack('n*').each { |x| checksum = checksum + x }
       if (tcp_len - (tcp_hlen * 4)) >= 0
         real_tcp_payload = payload[0, (tcp_len - (tcp_hlen * 4))] # Can't forget those pesky FCSes!
       else
         real_tcp_payload = payload # Something's amiss here so don't bother figuring out where the real payload is.
       end
       chk_payload = (real_tcp_payload.size % 2 == 0 ? real_tcp_payload : real_tcp_payload + "\x00") # Null pad if it's odd.
-      chk_payload.unpack("n*").each { |x| checksum = checksum + x }
+      chk_payload.unpack('n*').each { |x| checksum = checksum + x }
       checksum = checksum % 0xffff
       checksum = 0xffff - checksum
       checksum == 0 ? 0xffff : checksum
@@ -217,27 +217,27 @@ module PacketFu
     # number, and IPID.
     def peek_format
       if ipv6?
-        peek_data = ["6T "]
-        peek_data << "%-5d" % self.to_s.size
-        peek_data << "%-31s" % "#{self.ipv6_saddr}:#{self.tcp_src}"
-        peek_data << "->"
-        peek_data << "%31s" % "#{self.ipv6_daddr}:#{self.tcp_dst}"
+        peek_data = ['6T ']
+        peek_data << '%-5d' % self.to_s.size
+        peek_data << '%-31s' % "#{self.ipv6_saddr}:#{self.tcp_src}"
+        peek_data << '->'
+        peek_data << '%31s' % "#{self.ipv6_daddr}:#{self.tcp_dst}"
       else
-        peek_data = ["T  "]
-        peek_data << "%-5d" % self.to_s.size
-        peek_data << "%-21s" % "#{self.ip_saddr}:#{self.tcp_src}"
-        peek_data << "->"
-        peek_data << "%21s" % "#{self.ip_daddr}:#{self.tcp_dst}"
+        peek_data = ['T  ']
+        peek_data << '%-5d' % self.to_s.size
+        peek_data << '%-21s' % "#{self.ip_saddr}:#{self.tcp_src}"
+        peek_data << '->'
+        peek_data << '%21s' % "#{self.ip_daddr}:#{self.tcp_dst}"
       end
       flags = ' ['
       flags << self.tcp_flags_dotmap
       flags << '] '
       peek_data << flags
-      peek_data << "S:"
-      peek_data << "%08x" % self.tcp_seq
+      peek_data << 'S:'
+      peek_data << '%08x' % self.tcp_seq
       unless ipv6?
-        peek_data << "|I:"
-        peek_data << "%04x" % self.ip_id
+        peek_data << '|I:'
+        peek_data << '%04x' % self.ip_id
       end
       peek_data.join
     end

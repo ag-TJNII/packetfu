@@ -26,7 +26,7 @@ module PacketFu
 
       i = 0
       while i < str.to_s.size
-        this_opt = case str[i, 1].unpack("C").first
+        this_opt = case str[i, 1].unpack('C').first
                    when 0; ::PacketFu::TcpOption::EOL.new
                    when 1; ::PacketFu::TcpOption::NOP.new
                    when 2; ::PacketFu::TcpOption::MSS.new
@@ -63,7 +63,7 @@ module PacketFu
           x = TcpOptions.new.read(x).decode
         end
       end
-      decoded.join(",")
+      decoded.join(',')
     end
 
     # Encode takes a human-readable string and appends the corresponding

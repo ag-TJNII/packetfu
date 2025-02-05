@@ -66,13 +66,13 @@ module PacketFu
 
     # Peek provides summary data on packet contents.
     def peek_format
-      peek_data = ["I  "]
-      peek_data << "%-5d" % to_s.size
-      peek_data << "%-21s" % "#{ip_saddr}"
-      peek_data << "->"
-      peek_data << "%21s" % "#{ip_daddr}"
-      peek_data << "%23s" % "I:"
-      peek_data << "%04x" % ip_id.to_i
+      peek_data = ['I  ']
+      peek_data << '%-5d' % to_s.size
+      peek_data << '%-21s' % "#{ip_saddr}"
+      peek_data << '->'
+      peek_data << '%21s' % "#{ip_daddr}"
+      peek_data << '%23s' % 'I:'
+      peek_data << '%04x' % ip_id.to_i
       peek_data.join
     end
   end

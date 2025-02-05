@@ -2,7 +2,7 @@
 # rvmsudo ruby examples/pcap2pcapng.rb test.pcap test.pcapng
 
 # Path setting slight of hand:
-$: << File.expand_path("../../lib", __FILE__)
+$: << File.expand_path('../../lib', __FILE__)
 
 require 'packetfu'
 
@@ -15,11 +15,11 @@ end
 
 if File.exist?(pcapng_filename)
   puts "PCAP-NG output file #{pcap_filename} already exists"
-  puts "Do you wish to overwrite the file? (Y/N, Default = N)"
+  puts 'Do you wish to overwrite the file? (Y/N, Default = N)'
   STDOUT.flush
   response = $stdin.gets.chomp
-  unless response == "Y"
-    puts "Aborting..."
+  unless response == 'Y'
+    puts 'Aborting...'
     exit 0
   end
 end

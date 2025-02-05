@@ -60,7 +60,7 @@ module PacketFu
     # The default decode for an unknown option. Known options should redefine this.
     def decode
       unk = "unk-#{self.kind.to_i}"
-      (self[:optlen].to_i > 2 && self[:value].to_s.size > 1) ? [unk, self[:value]].join(":") : unk
+      (self[:optlen].to_i > 2 && self[:value].to_s.size > 1) ? [unk, self[:value]].join(':') : unk
     end
 
     # Setter for the "kind" byte of this option.
@@ -108,7 +108,7 @@ module PacketFu
       end
 
       def decode
-        "EOL"
+        'EOL'
       end
     end
 
@@ -123,7 +123,7 @@ module PacketFu
       end
 
       def decode
-        "NOP"
+        'NOP'
       end
     end
 
@@ -189,7 +189,7 @@ module PacketFu
       # SACKOK options with sizes other than 2 are malformed.
       def decode
         if self[:optlen].to_i == 2
-          "SACKOK"
+          'SACKOK'
         else
           "SACKOK-bad:#{self[:value]}"
         end
@@ -205,7 +205,7 @@ module PacketFu
       def initialize(args = {})
         super(
           args.merge(:kind => 5,
-                     :optlen => ((args[:value] || "").size + 2))
+                     :optlen => ((args[:value] || '').size + 2))
         )
       end
 
@@ -285,7 +285,7 @@ module PacketFu
       # TS options with lengths other than 10 are malformed.
       def decode
         if self[:optlen].to_i == 10
-          val1, val2 = self[:value].unpack("NN")
+          val1, val2 = self[:value].unpack('NN')
           "TS:#{val1};#{val2}"
         else
           "TS-bad:#{self[:value]}"
@@ -296,9 +296,9 @@ module PacketFu
       # should be written as decimal numbers.
       def encode(str)
         if str =~ /^([0-9]+);([0-9]+)$/
-          tsval, tsecr = str.split(";").map { |x| x.to_i }
+          tsval, tsecr = str.split(';').map { |x| x.to_i }
           if tsval <= 0xffffffff && tsecr <= 0xffffffff
-            self[:value] = StructFu::String.new([tsval, tsecr].pack("NN"))
+            self[:value] = StructFu::String.new([tsval, tsecr].pack('NN'))
           else
             self[:value] = StructFu::String.new(str)
           end

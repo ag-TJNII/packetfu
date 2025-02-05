@@ -42,8 +42,8 @@ module PacketFu
       iface = args[:iface] || :eth0
       args[:config] ||= whoami?(:iface => iface)
       arp_pkt = PacketFu::ARPPacket.new(:flavor => (args[:flavor] || :none), :config => args[:config])
-      arp_pkt.eth_daddr = "ff:ff:ff:ff:ff:ff"
-      arp_pkt.arp_daddr_mac = "00:00:00:00:00:00"
+      arp_pkt.eth_daddr = 'ff:ff:ff:ff:ff:ff'
+      arp_pkt.arp_daddr_mac = '00:00:00:00:00:00'
       arp_pkt.arp_daddr_ip = target_ip
       # Stick the Capture object in its own thread.
       cap_thread = Thread.new do
@@ -122,7 +122,7 @@ module PacketFu
       end
 
       if args[:iface].to_s =~ /^lo/ # Linux loopback more or less. Need a switch for windows loopback, too.
-        dst_host = "127.0.0.1"
+        dst_host = '127.0.0.1'
       else
         dst_host = (args[:target] || rand_routable_daddr.to_s)
       end
@@ -150,13 +150,13 @@ module PacketFu
             if pkt.payload == msg
 
               my_data =	{
-                :iface => (args[:iface] || ENV['IFACE'] || default_int || "lo").to_s,
-                :pcapfile => args[:pcapfile] || "/tmp/out.pcap",
+                :iface => (args[:iface] || ENV['IFACE'] || default_int || 'lo').to_s,
+                :pcapfile => args[:pcapfile] || '/tmp/out.pcap',
                 :eth_saddr => pkt.eth_saddr,
                 :eth_src => pkt.eth_src.to_s,
                 :ip_saddr => pkt.ip_saddr,
                 :ip_src => pkt.ip_src,
-                :ip_src_bin => [pkt.ip_src].pack("N"),
+                :ip_src_bin => [pkt.ip_src].pack('N'),
                 :eth_dst => pkt.eth_dst.to_s,
                 :eth_daddr => pkt.eth_daddr
               }
@@ -255,7 +255,7 @@ module PacketFu
           case s
           when /inet addr:[\s]*([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)(.*Mask:([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+))?/i
             ret[:ip_saddr] = $1
-            ret[:ip_src] = [IPAddr.new($1).to_i].pack("N")
+            ret[:ip_src] = [IPAddr.new($1).to_i].pack('N')
             ret[:ip4_obj] = IPAddr.new($1)
             ret[:ip4_obj] = ret[:ip4_obj].mask($3) if $3
           when /inet6 addr:[\s]*([0-9a-fA-F:\x2f]+)/
@@ -279,11 +279,11 @@ module PacketFu
           when /inet[\s]*([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)(.*Mask[\s]+(0x[a-f0-9]+))?/i
             imask = 0
             if $3
-              imask = $3.to_i(16).to_s(2).count("1")
+              imask = $3.to_i(16).to_s(2).count('1')
             end
 
             ret[:ip_saddr] = $1
-            ret[:ip_src] = [IPAddr.new($1).to_i].pack("N")
+            ret[:ip_src] = [IPAddr.new($1).to_i].pack('N')
             ret[:ip4_obj] = IPAddr.new($1)
             ret[:ip4_obj] = ret[:ip4_obj].mask(imask) if imask
           when /inet6[\s]*([0-9a-fA-F:\x2f]+)/
@@ -306,7 +306,7 @@ module PacketFu
             ret[:eth_src] = EthHeader.mac2str(ret[:eth_saddr])
           when /inet[\s]*([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)(.*netmask[\s]*(0x[0-9a-fA-F]{8}))?/
             ret[:ip_saddr] = $1
-            ret[:ip_src] = [IPAddr.new($1).to_i].pack("N")
+            ret[:ip_src] = [IPAddr.new($1).to_i].pack('N')
             ret[:ip4_obj] = IPAddr.new($1)
             ret[:ip4_obj] = ret[:ip4_obj].mask(($3.hex.to_s(2) =~ /0*$/)) if $3
           when /inet6[\s]*([0-9a-fA-F:\x2f]+)/
@@ -329,7 +329,7 @@ module PacketFu
             ret[:eth_src] = EthHeader.mac2str(ret[:eth_saddr])
           when /inet[\s]*([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)(.*netmask[\s]*(0x[0-9a-fA-F]{8}))?/
             ret[:ip_saddr] = $1
-            ret[:ip_src] = [IPAddr.new($1).to_i].pack("N")
+            ret[:ip_src] = [IPAddr.new($1).to_i].pack('N')
             ret[:ip4_obj] = IPAddr.new($1)
             ret[:ip4_obj] = ret[:ip4_obj].mask(($3.hex.to_s(2) =~ /0*$/)) if $3
           when /inet6[\s]*([0-9a-fA-F:\x2f]+)/

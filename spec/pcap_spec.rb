@@ -9,18 +9,18 @@ include PacketFu
 
 describe PcapHeader do
   before(:all) do
-    @file = File.open("test/sample.pcap") { |f| f.read }
-    @file.force_encoding "binary" if @file.respond_to? :force_encoding
+    @file = File.open('test/sample.pcap') { |f| f.read }
+    @file.force_encoding 'binary' if @file.respond_to? :force_encoding
     @file_magic = @file[0, 4]
     @file_header = @file[0, 24]
   end
 
-  context "when initializing" do
-    it "should be a good sample file" do
+  context 'when initializing' do
+    it 'should be a good sample file' do
       expect(@file_magic).to eql("\xd4\xc3\xb2\xa1")
     end
 
-    it "should have sane defaults (little)" do
+    it 'should have sane defaults (little)' do
       @pcap_header = PcapHeader.new
       expect(@pcap_header.sz).to eql(24)
       expect(@pcap_header.endian).to eql(:little)
@@ -37,7 +37,7 @@ describe PcapHeader do
       expect(@pcap_header.to_s[0, 24]).to eql(@file_header)
     end
 
-    it "should have sane defaults (big)" do
+    it 'should have sane defaults (big)' do
       @pcap_header = PcapHeader.new(:endian => :big)
       expect(@pcap_header.sz).to eql(24)
       expect(@pcap_header.endian).to eql(:big)
@@ -52,14 +52,14 @@ describe PcapHeader do
       expect(@pcap_header.to_s[0, 24]).to eql("\xA1\xB2\xC3\xD4\x00\x02\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xFF\xFF\x00\x00\x00\x01")
     end
 
-    it "should error on bad endian type" do
+    it 'should error on bad endian type' do
       # We want to ensure our endianness is little or big.
       expect { PcapHeader.new(:endian => :just_right) }.to raise_error(ArgumentError)
     end
   end
 
-  context "when reading from string" do
-    it "should be a good sample file" do
+  context 'when reading from string' do
+    it 'should be a good sample file' do
       @pcap_header = PcapHeader.new()
       @pcap_header.read(@file)
       expect(@pcap_header.to_s).to eql(@file_header)
@@ -69,19 +69,19 @@ end
 
 describe Timestamp do
   before(:all) do
-    @file = File.open("test/sample.pcap") { |f| f.read }
+    @file = File.open('test/sample.pcap') { |f| f.read }
     @ts = @file[24, 8]
   end
 
-  context "when initializing" do
-    it "should have sane defaults" do
+  context 'when initializing' do
+    it 'should have sane defaults' do
       expect(Timestamp.new.size).to eql(3)
       expect(Timestamp.new.sz).to eql(8)
     end
   end
 
-  context "when reading" do
-    it "should parse from a string" do
+  context 'when reading' do
+    it 'should parse from a string' do
       timestamp = Timestamp.new
       timestamp.read(@ts)
       expect(timestamp.to_s).to eql(@ts)
@@ -92,24 +92,24 @@ end
 describe PcapPacket do
   before(:all) do
     @file = File.open('test/sample.pcap') { |f| f.read }
-    @file.force_encoding "binary" if @file.respond_to? :force_encoding
+    @file.force_encoding 'binary' if @file.respond_to? :force_encoding
     @header = @file[0, 24]
     @packet = @file[24, 100] # pkt is 78 bytes + 16 bytes pcap hdr == 94
   end
 
-  context "when initializing" do
-    it "should have sane defaults" do
+  context 'when initializing' do
+    it 'should have sane defaults' do
       pcap_packet = PcapPacket.new(:endian => :little)
       expect(pcap_packet.endian).to eql(:little)
       expect(pcap_packet.timestamp).to eql(PacketFu::Timestamp.new(:endian => :little))
       expect(pcap_packet.incl_len).to eql(StructFu::Int32le.new(0))
       expect(pcap_packet.orig_len).to eql(StructFu::Int32le.new)
-      expect(pcap_packet.data).to eql("")
+      expect(pcap_packet.data).to eql('')
     end
   end
 
-  context "when reading" do
-    it "should parse from a string" do
+  context 'when reading' do
+    it 'should parse from a string' do
       pcap_packet = PcapPacket.new :endian => :little
       pcap_packet.read(@packet)
       expect(pcap_packet.endian).to eql(:little)
@@ -141,8 +141,8 @@ describe PcapPackets do
     @file = File.open('test/sample.pcap') { |f| f.read }
   end
 
-  context "when initializing" do
-    it "should have sane defaults" do
+  context 'when initializing' do
+    it 'should have sane defaults' do
       pcap_packets = PcapPackets.new()
       expect(pcap_packets.endian).to eql(:little)
       expect(pcap_packets.size).to eql(0)
@@ -150,8 +150,8 @@ describe PcapPackets do
     end
   end
 
-  context "when reading" do
-    it "should have read pcap packets" do
+  context 'when reading' do
+    it 'should have read pcap packets' do
       pcap_packets = PcapPackets.new()
       pcap_packets.read @file
       expect(pcap_packets.size).to eql(11)
@@ -167,8 +167,8 @@ describe PcapFile do
     @md5 = '1be3b5082bb135c6f22de8801feb3495'
   end
 
-  context "when initializing" do
-    it "should have sane defaults" do
+  context 'when initializing' do
+    it 'should have sane defaults' do
       pcap_file = PcapFile.new()
       expect(pcap_file.endian).to eql(nil)
       expect(pcap_file.head).to eql(PcapHeader.new)
@@ -176,16 +176,16 @@ describe PcapFile do
     end
   end
 
-  context "when reading and writing" do
+  context 'when reading and writing' do
     before(:each) { @temp_file = Tempfile.new('pcap_pcap') }
     after(:each) { @temp_file.close; @temp_file.unlink }
 
-    it "should read via #read and write via #to_file" do
+    it 'should read via #read and write via #to_file' do
       pcap_file = PcapFile.new
       pcap_file.read @file
       pcap_file.to_file(:filename => @temp_file.path)
       newfile = File.open(@temp_file.path) { |f| f.read(f.stat.size) }
-      newfile.force_encoding "binary" if newfile.respond_to? :force_encoding
+      newfile.force_encoding 'binary' if newfile.respond_to? :force_encoding
       expect(newfile).to eql(@file)
 
       pcap_file.to_file(:filename => @temp_file.path, :append => true)
@@ -193,7 +193,7 @@ describe PcapFile do
       expect(packet_array.size).to eql(22)
     end
 
-    it "should read via #file_to_array and write via #to_f" do
+    it 'should read via #file_to_array and write via #to_f' do
       # TODO: Figure out why this is failing to write properly when converted to a Tempfile
       File.unlink('out.pcap') if File.exist? 'out.pcap'
       pcaps = PcapFile.new.file_to_array(:filename => 'test/sample.pcap')
@@ -207,7 +207,7 @@ describe PcapFile do
       File.unlink('out.pcap')
     end
 
-    it "should read via #file_to_array and write via #a2f with timestamp changes" do
+    it 'should read via #file_to_array and write via #a2f with timestamp changes' do
       pcap_file = PcapFile.new
       packet_array = pcap_file.file_to_array(:filename => 'test/sample.pcap')
       expect(packet_array.size).to eql(11)
@@ -225,15 +225,15 @@ describe PcapFile do
 end
 
 describe Read do
-  context "when initializing" do
-    it "should have sane defaults" do
+  context 'when initializing' do
+    it 'should have sane defaults' do
       pcap_packets = Read.new()
       expect(pcap_packets).to be_kind_of(Read)
     end
   end
 
-  context "when reading" do
-    it "should read from a string" do
+  context 'when reading' do
+    it 'should read from a string' do
       pkts = Read.file_to_array(:file => 'test/sample.pcap')
       expect(pkts).to be_kind_of(Array)
       expect(pkts.size).to eql(11)
@@ -245,7 +245,7 @@ describe Read do
       expect(that_packet).to be_kind_of(ICMPPacket)
     end
 
-    it "should read from a hash" do
+    it 'should read from a hash' do
       pkts = Read.file_to_array(:file => 'test/sample.pcap', :ts => true)
       expect(pkts).to be_kind_of(Array)
       expect(pkts.size).to eql(11)
@@ -260,18 +260,18 @@ describe Read do
 end
 
 describe Write do
-  context "when initializing" do
-    it "should have sane defaults" do
+  context 'when initializing' do
+    it 'should have sane defaults' do
       pcap_packets = Write.new()
       expect(pcap_packets).to be_kind_of(Write)
     end
   end
 
-  context "when writing" do
+  context 'when writing' do
     before(:each) { @temp_file = Tempfile.new('write_pcap') }
     after(:each) { @temp_file.close; @temp_file.unlink }
 
-    it "should read from a string" do
+    it 'should read from a string' do
       pkts = Read.file_to_array(:file => 'test/sample.pcap')
       expect(pkts).to be_kind_of(Array)
       expect(pkts.size).to eql(11)

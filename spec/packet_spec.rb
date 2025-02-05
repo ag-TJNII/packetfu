@@ -8,7 +8,7 @@ require 'packetfu/protos/tcp'
 require 'packetfu/protos/icmp'
 require 'fake_packets'
 
-describe PacketFu::Packet, "abstract packet class behavior" do
+describe PacketFu::Packet, 'abstract packet class behavior' do
   before(:all) do
     add_fake_packets
   end
@@ -17,21 +17,21 @@ describe PacketFu::Packet, "abstract packet class behavior" do
     remove_fake_packets
   end
 
-  it "should not be instantiated" do
+  it 'should not be instantiated' do
     expect { PacketFu::Packet.new }.to raise_error(NoMethodError)
   end
 
-  it "should allow subclasses to instantiate" do
+  it 'should allow subclasses to instantiate' do
     expect(PacketFu::FooPacket.new).to be
     PacketFu.packet_classes.include?(PacketFu::FooPacket).should be true
   end
 
-  it "should register packet classes with PacketFu" do
+  it 'should register packet classes with PacketFu' do
     PacketFu.packet_classes { should include(FooPacket) }
     PacketFu.packet_classes { should include(BarPacket) }
   end
 
-  it "should disallow badly named subclasses" do
+  it 'should disallow badly named subclasses' do
     expect {
       class PacketFu::PacketNot < PacketFu::Packet
       end
@@ -42,24 +42,24 @@ describe PacketFu::Packet, "abstract packet class behavior" do
 
   before(:each) do
     @tcp_packet = PacketFu::TCPPacket.new
-    @tcp_packet.ip_saddr = "10.10.10.10"
+    @tcp_packet.ip_saddr = '10.10.10.10'
   end
 
-  it "should shallow copy with dup()" do
+  it 'should shallow copy with dup()' do
     p2 = @tcp_packet.dup
-    p2.ip_saddr = "20.20.20.20"
+    p2.ip_saddr = '20.20.20.20'
     p2.ip_saddr.should == @tcp_packet.ip_saddr
     p2.headers[1].object_id.should == @tcp_packet.headers[1].object_id
   end
 
-  it "should deep copy with clone()" do
+  it 'should deep copy with clone()' do
     p3 = @tcp_packet.clone
-    p3.ip_saddr = "30.30.30.30"
+    p3.ip_saddr = '30.30.30.30'
     p3.ip_saddr.should_not == @tcp_packet.ip_saddr
     p3.headers[1].object_id.should_not == @tcp_packet.headers[1].object_id
   end
 
-  it "should have senisble equality" do
+  it 'should have senisble equality' do
     p4 = @tcp_packet.dup
     p4.should == @tcp_packet
     p5 = @tcp_packet.clone
@@ -67,7 +67,7 @@ describe PacketFu::Packet, "abstract packet class behavior" do
   end
 
   # It's actually kinda hard to manually create identical TCP packets
-  it "should be possible to manually create identical packets" do
+  it 'should be possible to manually create identical packets' do
     p6 = @tcp_packet.clone
     p6.should == @tcp_packet
     p7 = PacketFu::TCPPacket.new
@@ -79,7 +79,7 @@ describe PacketFu::Packet, "abstract packet class behavior" do
     p7.should == p6
   end
 
-  it "should parse IPv4 packets" do
+  it 'should parse IPv4 packets' do
     packets = PacketFu::PcapFile.read(File.join(File.dirname(__FILE__), 'ipv4_icmp.pcap'))
     packets.size.should == 1
     packet = PacketFu::Packet.parse(packets.first.data.to_s)
@@ -87,7 +87,7 @@ describe PacketFu::Packet, "abstract packet class behavior" do
     packet.headers[1].should be_a(PacketFu::IPHeader)
   end
 
-  it "should parse IPv6 packets" do
+  it 'should parse IPv6 packets' do
     packets = PacketFu::PcapFile.read(File.join(File.dirname(__FILE__), 'ipv6_udp.pcap'))
     packets.size.should == 1
     packet = PacketFu::Packet.parse(packets.first.data.to_s)

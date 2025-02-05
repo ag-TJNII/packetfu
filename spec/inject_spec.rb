@@ -15,12 +15,12 @@ require 'tempfile'
 include PacketFu
 
 describe Inject do
-  context "when creating an object from scratch" do
+  context 'when creating an object from scratch' do
     before :each do
       @inject = PacketFu::Inject.new
     end
 
-    it "should have sane defaults" do
+    it 'should have sane defaults' do
       expect(@inject.array).to be_kind_of(Array)
       expect(@inject.stream).to be_kind_of(Array)
       expect(@inject.iface).to be_kind_of(String)
@@ -29,7 +29,7 @@ describe Inject do
       expect(@inject.timeout).to eql(1)
     end
 
-    it "should allow creating an inject object with non-std attributes" do
+    it 'should allow creating an inject object with non-std attributes' do
       # Can only run this if we're root
       if Process.uid == 0
         options = {
@@ -50,12 +50,12 @@ describe Inject do
     end
   end
 
-  context "when injecting on the wire" do
+  context 'when injecting on the wire' do
     before :each do
       @inject = PacketFu::Inject.new
     end
 
-    it "should have sane defaults" do
+    it 'should have sane defaults' do
       expect(@inject.array).to be_kind_of(Array)
       expect(@inject.stream).to be_kind_of(Array)
       expect(@inject.iface).to be_kind_of(String)
@@ -66,25 +66,25 @@ describe Inject do
 
     # Can only run these if we're root
     if Process.uid == 0
-      it "should allow creating an inject object with non-std attributes" do
+      it 'should allow creating an inject object with non-std attributes' do
         udp_packet = PacketFu::UDPPacket.new(:iface => PacketFu::Utils::default_int)
         udp_packet.ip_dst = PacketFu::Utils.rand_routable_daddr.to_s
         udp_packet.udp_dport = 12345
         udp_packet.udp_sport = 12345
-        udp_packet.payload = "PacketFu test packet"
+        udp_packet.payload = 'PacketFu test packet'
         udp_packet.recalc
 
         expect(udp_packet.to_w).to eql([1, 1, 62])
       end
 
-      it "should allow creating an inject object with non-std attributes" do
+      it 'should allow creating an inject object with non-std attributes' do
         packet_array = []
 
         udp_packet = PacketFu::UDPPacket.new(:iface => PacketFu::Utils::default_int)
         udp_packet.ip_dst = PacketFu::Utils.rand_routable_daddr.to_s
         udp_packet.udp_dport = 12345
         udp_packet.udp_sport = 12345
-        udp_packet.payload = "PacketFu test packet"
+        udp_packet.payload = 'PacketFu test packet'
         udp_packet.recalc
         3.times { packet_array << udp_packet.to_s }
 

@@ -38,7 +38,7 @@ module PacketFu
       byte += 0b00000100 if b0.to_i == 1
       byte += 0b00000010 if local.to_i == 1
       byte += 0b00000001 if multicast.to_i == 1
-      [byte, oui].pack("Cn")
+      [byte, oui].pack('Cn')
     end
 
     # Reads a string to populate the object.
@@ -59,7 +59,7 @@ module PacketFu
       self[:b0] =        byte & 0b00000100 == 0b00000100 ? 1 : 0
       self[:local] =     byte & 0b00000010 == 0b00000010 ? 1 : 0
       self[:multicast] = byte & 0b00000001 == 0b00000001 ? 1 : 0
-      self[:oui] =       str[1, 2].unpack("n").first
+      self[:oui] =       str[1, 2].unpack('n').first
       self
     end
   end
@@ -81,7 +81,7 @@ module PacketFu
 
     # Returns the object in string form.
     def to_s
-      [n0, n1, n2].map { |x| x.to_i }.pack("C3")
+      [n0, n1, n2].map { |x| x.to_i }.pack('C3')
     end
 
     # Reads a string to populate the object.
@@ -89,7 +89,7 @@ module PacketFu
       force_binary(str)
       return self if str.nil?
 
-      self[:n0], self[:n1], self[:n2] = str[0, 3].unpack("C3")
+      self[:n0], self[:n1], self[:n2] = str[0, 3].unpack('C3')
       self
     end
   end
@@ -197,9 +197,9 @@ module PacketFu
     # #=> "\021\"3DUf"
     def self.mac2str(mac)
       if mac.split(/[:\x2d\x2e\x5f]+/).size == 6
-        ret =	mac.split(/[:\x2d\x2e\x20\x5f]+/).collect { |x| x.to_i(16) }.pack("C6")
+        ret =	mac.split(/[:\x2d\x2e\x20\x5f]+/).collect { |x| x.to_i(16) }.pack('C6')
       else
-        raise ArgumentError, "Unkown format for mac address."
+        raise ArgumentError, 'Unkown format for mac address.'
       end
       return ret
     end
@@ -211,7 +211,7 @@ module PacketFu
     # #=> "11:22:33:44:55:66"
     def self.str2mac(mac = '')
       if mac.to_s.size == 6 && mac.kind_of?(::String)
-        ret = mac.unpack("C6").map { |x| sprintf("%02x", x) }.join(":")
+        ret = mac.unpack('C6').map { |x| sprintf('%02x', x) }.join(':')
       end
     end
 
@@ -245,7 +245,7 @@ module PacketFu
     alias :eth_src_readable :eth_saddr
 
     def eth_proto_readable
-      "0x%04x" % eth_proto
+      '0x%04x' % eth_proto
     end
   end
 end

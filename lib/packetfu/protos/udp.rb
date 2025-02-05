@@ -123,7 +123,7 @@ module PacketFu
         real_udp_payload = payload
       end
       chk_payload = (real_udp_payload.size % 2 == 0 ? real_udp_payload : real_udp_payload + "\x00")
-      chk_payload.unpack("n*").each { |x| checksum = checksum + x }
+      chk_payload.unpack('n*').each { |x| checksum = checksum + x }
       checksum = checksum % 0xffff
       checksum = 0xffff - checksum
       checksum == 0 ? 0xffff : checksum
@@ -155,20 +155,20 @@ module PacketFu
     # Peek provides summary data on packet contents.
     def peek_format
       if self.ipv6?
-        peek_data = ["6U "]
-        peek_data << "%-5d" % self.to_s.size
-        peek_data << "%-31s" % "#{self.ipv6_saddr}:#{self.udp_sport}"
-        peek_data << "->"
-        peek_data << "%31s" % "#{self.ipv6_daddr}:#{self.udp_dport}"
+        peek_data = ['6U ']
+        peek_data << '%-5d' % self.to_s.size
+        peek_data << '%-31s' % "#{self.ipv6_saddr}:#{self.udp_sport}"
+        peek_data << '->'
+        peek_data << '%31s' % "#{self.ipv6_daddr}:#{self.udp_dport}"
         peek_data.join
       else
-        peek_data = ["U  "]
-        peek_data << "%-5d" % self.to_s.size
-        peek_data << "%-21s" % "#{self.ip_saddr}:#{self.udp_sport}"
-        peek_data << "->"
-        peek_data << "%21s" % "#{self.ip_daddr}:#{self.udp_dport}"
-        peek_data << "%23s" % "I:"
-        peek_data << "%04x" % self.ip_id
+        peek_data = ['U  ']
+        peek_data << '%-5d' % self.to_s.size
+        peek_data << '%-21s' % "#{self.ip_saddr}:#{self.udp_sport}"
+        peek_data << '->'
+        peek_data << '%21s' % "#{self.ip_daddr}:#{self.udp_dport}"
+        peek_data << '%23s' % 'I:'
+        peek_data << '%04x' % self.ip_id
         peek_data.join
       end
     end

@@ -91,7 +91,7 @@ module PacketFu
     # correctly. Now with append! XXX: Document this!
     def to_f(filename = nil, mode = 'w')
       filename ||= 'out.pcap'
-      mode = mode.to_s[0, 1] + "b"
+      mode = mode.to_s[0, 1] + 'b'
       raise ArgumentError, "Unknown mode: #{mode.to_s}" unless mode =~ /^[wa]/
 
       if (mode == 'w' || !(File.exist?(filename)))
@@ -239,9 +239,9 @@ module PacketFu
     #    #=> 79
     #
     def peek_format
-      peek_data = ["?  "]
-      peek_data << "%-5d" % self.to_s.size
-      peek_data << "%68s" % self.to_s[0, 34].unpack("H*")[0]
+      peek_data = ['?  ']
+      peek_data << '%-5d' % self.to_s.size
+      peek_data << '%68s' % self.to_s[0, 34].unpack('H*')[0]
       peek_data.join
     end
 
@@ -297,12 +297,12 @@ module PacketFu
     # Hexify provides a neatly-formatted dump of binary data, familar to hex readers.
     def hexify(str)
       str.force_encoding(Encoding::BINARY) if str.respond_to? :force_encoding
-      hexascii_lines = str.to_s.unpack("H*")[0].scan(/.{1,32}/)
+      hexascii_lines = str.to_s.unpack('H*')[0].scan(/.{1,32}/)
       regex = Regexp.new('[\x00-\x1f\x7f-\xff]'.force_encoding('ASCII-8BIT'), Regexp::NOENCODING)
       chars = str.to_s.gsub(regex, '.')
       chars_lines = chars.scan(/.{1,16}/)
       ret = []
-      hexascii_lines.size.times { |i| ret << "%-48s  %s" % [hexascii_lines[i].gsub(/(.{2})/, "\\1 "), chars_lines[i]] }
+      hexascii_lines.size.times { |i| ret << '%-48s  %s' % [hexascii_lines[i].gsub(/(.{2})/, '\\1 '), chars_lines[i]] }
       ret.join("\n")
     end
 
@@ -339,7 +339,7 @@ module PacketFu
     def dissection_table
       table = []
       @headers.each_with_index do |header, table_idx|
-        proto = header.class.name.sub(/^.*::/, "")
+        proto = header.class.name.sub(/^.*::/, '')
         table << [proto, []]
         header.class.members.each do |elem|
           elem_sym = elem.to_sym # to_sym needed for 1.8
@@ -386,18 +386,18 @@ module PacketFu
         end
       end
       total_width = elem_widths.inject(0) { |sum, x| sum + x }
-      table = ""
+      table = ''
       dtable.each do |proto|
-        table << "--"
+        table << '--'
         table << proto[0]
         if total_width > proto[0].size
-          table << ("-" * (total_width - proto[0].size + 2))
+          table << ('-' * (total_width - proto[0].size + 2))
         else
-          table << ("-" * (total_width + 2))
+          table << ('-' * (total_width + 2))
         end
         table << "\n"
         proto[1].each do |elems|
-          table << "  "
+          table << '  '
           elems_table = []
           (0..2).each do |i|
             elems_table << ("%-#{elem_widths[i]}s" % elems[i])
@@ -407,10 +407,10 @@ module PacketFu
         end
       end
       if hex_body && !hex_body.empty?
-        table << "-" * 66
+        table << '-' * 66
         table << "\n"
         table << "00-01-02-03-04-05-06-07-08-09-0a-0b-0c-0d-0e-0f---0123456789abcdef\n"
-        table << "-" * 66
+        table << '-' * 66
         table << "\n"
         table << hex_body
       end
@@ -444,7 +444,7 @@ module PacketFu
       when :dissect
         self.dissect
       when :hex
-        self.proto.join("|") + "\n" + self.inspect_hex
+        self.proto.join('|') + "\n" + self.inspect_hex
       else
         super
       end
