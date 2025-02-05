@@ -43,11 +43,11 @@ describe Capture do
       # Can only run this if we're root
       if Process.uid == 0
         options = {
-          :iface => PacketFu::Utils::default_int,
-          :snaplen => 0xfffe,
-          :promisc => true,
-          :timeout => 5,
-          :filter => 'not port 22',
+          iface: PacketFu::Utils::default_int,
+          snaplen: 0xfffe,
+          promisc: true,
+          timeout: 5,
+          filter: 'not port 22',
         }
         @capture = PacketFu::Capture.new(options)
 
@@ -72,7 +72,7 @@ describe Capture do
         def do_capture_test(daddr)
           begin
             Timeout::timeout(3) {
-              cap = PacketFu::Capture.new(:iface => PacketFu::Utils::default_int, :start => true)
+              cap = PacketFu::Capture.new(iface: PacketFu::Utils::default_int, start: true)
               cap.stream.each do |p|
                 pkt = PacketFu::Packet.parse p
                 next unless pkt.is_icmp?
@@ -103,7 +103,7 @@ describe Capture do
 
           begin
             Timeout::timeout(3) {
-              cap = PacketFu::Capture.new(:iface => PacketFu::Utils::default_int, :start => true, :filter => "icmp and dst host #{daddr}")
+              cap = PacketFu::Capture.new(iface: PacketFu::Utils::default_int, start: true, filter: "icmp and dst host #{daddr}")
               cap.stream.each do |p|
                 pkt = PacketFu::Packet.parse p
                 next unless pkt.is_icmp?

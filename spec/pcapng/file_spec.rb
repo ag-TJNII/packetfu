@@ -181,16 +181,16 @@ module PacketFu
 
         it 'creates a file and write self to it' do
           @pcapng.readfile @file
-          @pcapng.to_file :filename => @write_file.path
+          @pcapng.to_file filename: @write_file.path
           @write_file.rewind
           expect(@write_file.read).to eq(::File.read(@file))
         end
 
         it 'appends a section to an existing file' do
           @pcapng.readfile @file
-          @pcapng.to_file :filename => @write_file.path
+          @pcapng.to_file filename: @write_file.path
 
-          @pcapng.to_file :filename => @write_file.path, :append => true
+          @pcapng.to_file filename: @write_file.path, append: true
 
           @pcapng.clear
           @pcapng.readfile @write_file.path
@@ -224,7 +224,7 @@ module PacketFu
           packets = @pcapng.read_packets(@file)[0..1]
 
           @pcapng.clear
-          @pcapng.array_to_file(:array => packets)
+          @pcapng.array_to_file(array: packets)
           @pcapng.write @tmpfilename
 
           @pcapng.clear
@@ -236,9 +236,9 @@ module PacketFu
           packets = @pcapng.read_packets(@file)[0..1]
 
           @pcapng.clear
-          @pcapng.array_to_file(:array => packets,
-                                :timestamp => Time.utc(2000, 1, 1),
-                                :ts_inc => 3600 * 24)
+          @pcapng.array_to_file(array: packets,
+                                timestamp: Time.utc(2000, 1, 1),
+                                ts_inc: 3600 * 24)
           @pcapng.write @tmpfilename
 
           @pcapng.clear
@@ -259,7 +259,7 @@ module PacketFu
           end
 
           @pcapng.clear
-          @pcapng.array_to_file(:array => array)
+          @pcapng.array_to_file(array: array)
           @pcapng.write @tmpfilename
 
           @pcapng.clear
@@ -274,7 +274,7 @@ module PacketFu
           packets = @pcapng.read_packets(@file)[0..2]
 
           @pcapng.clear
-          @pcapng.array_to_file(:array => packets, :filename => @tmpfilename)
+          @pcapng.array_to_file(array: packets, filename: @tmpfilename)
 
           @pcapng.clear
           packets2 = @pcapng.read_packets(@tmpfilename)

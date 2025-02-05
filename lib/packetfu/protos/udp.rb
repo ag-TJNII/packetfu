@@ -77,7 +77,7 @@ module PacketFu
 
     def initialize(args = {})
       if args[:on_ipv6] or args[:ipv6]
-        @eth_header = EthHeader.new(args.merge(:eth_proto => 0x86dd)).read(args[:eth])
+        @eth_header = EthHeader.new(args.merge(eth_proto: 0x86dd)).read(args[:eth])
         @ipv6_header = IPv6Header.new(args).read(args[:ipv6])
         @ipv6_header.ipv6_next = 0x11
       else

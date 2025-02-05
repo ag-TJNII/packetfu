@@ -67,7 +67,7 @@ describe UDPPacket do
 
     context 'UDP over IPv4 v2' do
       it 'should have all the UDP attributes' do
-        udp_packet = PcapFile.new.file_to_array(:f => 'test/sample.pcap')[0]
+        udp_packet = PcapFile.new.file_to_array(f: 'test/sample.pcap')[0]
         udp_pkt = Packet.parse(udp_packet)
         expect(udp_pkt).to be_kind_of(UDPPacket)
         expect(udp_pkt.udp_sum.to_i).to eql(0x8bf8)
@@ -76,7 +76,7 @@ describe UDPPacket do
 
     context 'UDP over IPv4 alter' do
       it 'should read and allow us to alert the payload' do
-        udp_packet = PcapFile.new.file_to_array(:f => 'test/sample.pcap')[0]
+        udp_packet = PcapFile.new.file_to_array(f: 'test/sample.pcap')[0]
         udp_pkt = Packet.parse(udp_packet)
         expect(udp_pkt).to be_kind_of(UDPPacket)
 
@@ -125,7 +125,7 @@ describe UDPPacket do
     end
 
     it 'should create UDP on IPv6 packets' do
-      udp = UDPPacket.new(:on_ipv6 => true)
+      udp = UDPPacket.new(on_ipv6: true)
       expect(udp.ip_header).to be_nil
       expect(udp.ipv6_header).to be_a(IPv6Header)
 
@@ -151,7 +151,7 @@ describe UDPPacket do
     end
 
     it 'should support peek functionnality (IPv6 case)' do
-      udp = UDPPacket.new(:on_ipv6 => true)
+      udp = UDPPacket.new(on_ipv6: true)
       udp.ipv6_saddr = '2000::1'
       udp.ipv6_daddr = '2001::1'
       udp.udp_src = 32756
@@ -171,7 +171,7 @@ describe UDPPacket do
       expect(not_stripped.udp_header.body.length).to eql(135)
 
       stripped = UDPPacket.new
-      stripped.read(str, :strip => true)
+      stripped.read(str, strip: true)
       expect(stripped.udp_header.body.length).to eql(133)
     end
   end

@@ -46,7 +46,7 @@ module PacketFu
         Int16.new(args[:tcp_dst]),
         Int32.new(args[:tcp_seq] || tcp_calc_seq),
         Int32.new(args[:tcp_ack]),
-        TcpHlen.new(:hlen => (args[:tcp_hlen] || 5)),
+        TcpHlen.new(hlen: (args[:tcp_hlen] || 5)),
         TcpReserved.new(args[:tcp_reserved] || 0),
         TcpEcn.new(args[:tcp_ecn]),
         TcpFlags.new(args[:tcp_flags]),
@@ -164,7 +164,7 @@ module PacketFu
       when PacketFu::TcpHlen
         self[:tcp_hlen] = i
       when Numeric
-        self[:tcp_hlen] = TcpHlen.new(:hlen => i.to_i)
+        self[:tcp_hlen] = TcpHlen.new(hlen: i.to_i)
       else
         self[:tcp_hlen].read(i)
       end
@@ -235,7 +235,7 @@ module PacketFu
     # Sets and returns the true length of the TCP Header.
     # TODO: Think about making all the option stuff safer.
     def tcp_calc_hlen
-      self[:tcp_hlen] = TcpHlen.new(:hlen => ((20 + tcp_opts_len) / 4))
+      self[:tcp_hlen] = TcpHlen.new(hlen: ((20 + tcp_opts_len) / 4))
     end
 
     # Generates a random high port. This is affected by packet flavor.

@@ -29,4 +29,4 @@ packet_array = PacketFu::PcapFile.file_to_array(pcap_filename)
 
 puts "Writing packet array to PCAP-NG at #{File.expand_path(pcapng_filename)}"
 pcapng_file = PacketFu::PcapNG::File.new()
-pcapng_file.array_to_file(:array => packet_array, :file => pcapng_filename)
+pcapng_file.array_to_file(array: packet_array, file: pcapng_filename)

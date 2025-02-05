@@ -14,7 +14,7 @@ describe LLDPPacket do
 
   context 'when reading' do
     it 'should read from PCAP and detect LLDP packets' do
-      cap = PacketFu::PcapFile.new.file_to_array(:filename => './test/sample_lldp.pcap')
+      cap = PacketFu::PcapFile.new.file_to_array(filename: './test/sample_lldp.pcap')
 
       lldap_packet1 = PacketFu::Packet.parse(cap[0])
       expect(lldap_packet1).to be_kind_of(LLDPPacket)

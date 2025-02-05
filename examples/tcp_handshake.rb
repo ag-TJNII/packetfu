@@ -17,7 +17,7 @@ ip = ARGV[0].chomp
 
 config = PacketFu::Utils.whoami?()
 
-syn_packet = PacketFu::TCPPacket.new(:config => config)
+syn_packet = PacketFu::TCPPacket.new(config: config)
 syn_packet.ip_daddr = ip
 syn_packet.tcp_dst = 80
 syn_packet.tcp_flags.syn = 1
@@ -26,7 +26,7 @@ syn_packet.recalc
 capture_thread = Thread.new do
   begin
     Timeout::timeout(3) {
-      cap = PacketFu::Capture.new(:iface => config[:iface], :start => true)
+      cap = PacketFu::Capture.new(iface: config[:iface], start: true)
       cap.stream.each do |p|
         pkt = PacketFu::Packet.parse p
         next unless pkt.is_tcp?

@@ -79,11 +79,11 @@ module PacketFu
 
     # Converts a packet to libpcap format. Bit of a hack?
     def to_pcap(args = {})
-      p = PcapPacket.new(:endian => args[:endian],
-                         :timestamp => Timestamp.new.to_s,
-                         :incl_len => self.to_s.size,
-                         :orig_len => self.to_s.size,
-                         :data => self)
+      p = PcapPacket.new(endian: args[:endian],
+                         timestamp: Timestamp.new.to_s,
+                         incl_len: self.to_s.size,
+                         orig_len: self.to_s.size,
+                         data: self)
     end
 
     # Put the entire packet into a libpcap file. XXX: this is a
@@ -107,7 +107,7 @@ module PacketFu
     # TODO: Do something with auto-checksumming?
     def to_w(iface = nil)
       iface = (iface || self.iface || PacketFu::Config.new.config[:iface]).to_s
-      inj = PacketFu::Inject.new(:iface => iface)
+      inj = PacketFu::Inject.new(iface: iface)
       inj.array = [@headers[0].to_s]
       inj.inject
     end

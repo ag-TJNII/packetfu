@@ -40,16 +40,16 @@ module PacketFu
       end
 
       iface = args[:iface] || :eth0
-      args[:config] ||= whoami?(:iface => iface)
-      arp_pkt = PacketFu::ARPPacket.new(:flavor => (args[:flavor] || :none), :config => args[:config])
+      args[:config] ||= whoami?(iface: iface)
+      arp_pkt = PacketFu::ARPPacket.new(flavor: (args[:flavor] || :none), config: args[:config])
       arp_pkt.eth_daddr = 'ff:ff:ff:ff:ff:ff'
       arp_pkt.arp_daddr_mac = '00:00:00:00:00:00'
       arp_pkt.arp_daddr_ip = target_ip
       # Stick the Capture object in its own thread.
       cap_thread = Thread.new do
         target_mac = nil
-        cap = PacketFu::Capture.new(:iface => iface, :start => true,
-                                    :filter => "arp src #{target_ip} and ether dst #{arp_pkt.eth_saddr}")
+        cap = PacketFu::Capture.new(iface: iface, start: true,
+                                    filter: "arp src #{target_ip} and ether dst #{arp_pkt.eth_saddr}")
         arp_pkt.to_w(iface) # Shorthand for sending single packets to the default interface.
         timeout = 0
         while target_mac.nil? && timeout <= (args[:timeout] || 3)
@@ -130,7 +130,7 @@ module PacketFu
       dst_port = rand_port
       msg = "PacketFu whoami? packet #{(Time.now.to_i + rand(0xffffff) + 1)}"
       iface = (args[:iface] || ENV['IFACE'] || default_int || :lo).to_s
-      cap = PacketFu::Capture.new(:iface => iface, :promisc => false, :start => true, :filter => "udp and dst host #{dst_host} and dst port #{dst_port}")
+      cap = PacketFu::Capture.new(iface: iface, promisc: false, start: true, filter: "udp and dst host #{dst_host} and dst port #{dst_port}")
       udp_sock = UDPSocket.new
       udp_sock.send(msg, 0, dst_host, dst_port)
       udp_sock = nil
@@ -150,15 +150,15 @@ module PacketFu
             if pkt.payload == msg
 
               my_data =	{
-                :iface => (args[:iface] || ENV['IFACE'] || default_int || 'lo').to_s,
-                :pcapfile => args[:pcapfile] || '/tmp/out.pcap',
-                :eth_saddr => pkt.eth_saddr,
-                :eth_src => pkt.eth_src.to_s,
-                :ip_saddr => pkt.ip_saddr,
-                :ip_src => pkt.ip_src,
-                :ip_src_bin => [pkt.ip_src].pack('N'),
-                :eth_dst => pkt.eth_dst.to_s,
-                :eth_daddr => pkt.eth_daddr
+                iface: (args[:iface] || ENV['IFACE'] || default_int || 'lo').to_s,
+                pcapfile: args[:pcapfile] || '/tmp/out.pcap',
+                eth_saddr: pkt.eth_saddr,
+                eth_src: pkt.eth_src.to_s,
+                ip_saddr: pkt.ip_saddr,
+                ip_src: pkt.ip_src,
+                ip_src_bin: [pkt.ip_src].pack('N'),
+                eth_dst: pkt.eth_dst.to_s,
+                eth_daddr: pkt.eth_daddr
               }
 
             else raise SecurityError,

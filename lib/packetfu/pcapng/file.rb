@@ -162,7 +162,7 @@ module PacketFu
         else
           f = filename.to_s
         end
-        self.to_file(:filename => f.to_s, :append => false)
+        self.to_file(filename: f.to_s, append: false)
       end
 
       # Shorthand method for appendong to a file. Can take either
@@ -173,7 +173,7 @@ module PacketFu
         else
           f = filename.to_s
         end
-        self.to_file(:filename => f.to_s, :append => true)
+        self.to_file(filename: f.to_s, append: true)
       end
 
       # Takes an array of packets  or a Hash.
@@ -211,7 +211,7 @@ module PacketFu
 
         section = SHB.new
         @sections << section
-        itf = IDB.new(:endian => section.endian)
+        itf = IDB.new(endian: section.endian)
         classify_block section, itf
 
         ary.each_with_index do |pkt, i|
@@ -228,18 +228,18 @@ module PacketFu
           this_ts = (this_ts / itf.ts_resol).to_i
           this_tsh = this_ts >> 32
           this_tsl = this_ts & 0xffffffff
-          this_pkt = EPB.new(:endian => section.endian,
-                             :interface_id => 0,
-                             :tsh => this_tsh,
-                             :tsl => this_tsl,
-                             :cap_len => this_cap_len,
-                             :orig_len => this_cap_len,
-                             :data => this_data)
+          this_pkt = EPB.new(endian: section.endian,
+                             interface_id: 0,
+                             tsh: this_tsh,
+                             tsl: this_tsl,
+                             cap_len: this_cap_len,
+                             orig_len: this_cap_len,
+                             data: this_data)
           classify_block section, this_pkt
         end
 
         if filename
-          self.to_f(:filename => filename, :append => append)
+          self.to_f(filename: filename, append: append)
         else
           self
         end

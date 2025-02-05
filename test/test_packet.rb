@@ -45,8 +45,8 @@ class PacketStrippingTest < Test::Unit::TestCase
   include PacketFu
 
   def test_arp_strip
-    pcaps = PcapFile.new.file_to_array(:f => 'sample.pcap')
-    p = Packet.parse(pcaps[5], :fix => true) # Really ARP request.
+    pcaps = PcapFile.new.file_to_array(f: 'sample.pcap')
+    p = Packet.parse(pcaps[5], fix: true) # Really ARP request.
     assert_kind_of(Packet, p)
     assert_kind_of(ARPPacket, p)
   end
@@ -58,7 +58,7 @@ class PacketParsersTest < Test::Unit::TestCase
   def test_parse_eth_packet
     assert_equal(EthPacket.layer, 1)
     assert_equal(EthPacket.layer_symbol, :link)
-    pcaps = PcapFile.new.file_to_array(:f => 'sample.pcap')
+    pcaps = PcapFile.new.file_to_array(f: 'sample.pcap')
     p = Packet.parse(pcaps[5]) # Really ARP.
     assert_kind_of(Packet, p)
     assert_kind_of(EthHeader, p.headers[0])
@@ -68,7 +68,7 @@ class PacketParsersTest < Test::Unit::TestCase
 
   def test_parse_arp_request
     assert_equal(ARPPacket.layer, 2)
-    pcaps = PcapFile.new.file_to_array(:f => 'sample.pcap')
+    pcaps = PcapFile.new.file_to_array(f: 'sample.pcap')
     p = Packet.parse(pcaps[5]) # Really ARP request.
     assert p.is_eth?
     assert_kind_of(EthPacket, p)
@@ -81,7 +81,7 @@ class PacketParsersTest < Test::Unit::TestCase
 
   def test_parse_arp_reply
     assert_equal(ARPPacket.layer, 2)
-    pcaps = PcapFile.new.file_to_array(:f => 'sample.pcap')
+    pcaps = PcapFile.new.file_to_array(f: 'sample.pcap')
     p = Packet.parse(pcaps[6]) # Really ARP reply.
     assert_equal(p.to_s, pcaps[6])
     assert_equal(2, p.arp_opcode.to_i)
@@ -90,7 +90,7 @@ class PacketParsersTest < Test::Unit::TestCase
 
   def test_parse_ip_packet
     assert_equal(IPPacket.layer, 2)
-    pcaps = PcapFile.new.file_to_array(:f => 'sample.pcap')
+    pcaps = PcapFile.new.file_to_array(f: 'sample.pcap')
     p = Packet.parse(pcaps[0]) # Really DNS request
     assert_equal(p.to_s[0, 20], pcaps[0][0, 20])
     assert_equal(p.to_s, pcaps[0])
@@ -100,7 +100,7 @@ class PacketParsersTest < Test::Unit::TestCase
 
   def test_parse_tcp_packet
     assert_equal(TCPPacket.layer, 3)
-    pcaps = PcapFile.new.file_to_array(:f => 'sample.pcap')
+    pcaps = PcapFile.new.file_to_array(f: 'sample.pcap')
     p = Packet.parse(pcaps[7]) # Really FIN/ACK
     assert_equal(p.to_s, pcaps[7])
     assert_kind_of(EthPacket, p)
@@ -110,7 +110,7 @@ class PacketParsersTest < Test::Unit::TestCase
 
   def test_parse_udp_packet
     assert_equal(UDPPacket.layer, 3)
-    pcaps = PcapFile.new.file_to_array(:f => 'sample.pcap')
+    pcaps = PcapFile.new.file_to_array(f: 'sample.pcap')
     p = Packet.parse(pcaps[0]) # Really DNS request
     assert_equal(p.to_s, pcaps[0])
     assert_kind_of(EthPacket, p)
@@ -121,7 +121,7 @@ class PacketParsersTest < Test::Unit::TestCase
   def test_parse_icmp_packet
     assert_equal(ICMPPacket.layer, 3)
     assert_equal(ICMPPacket.layer_symbol, :transport)
-    pcaps = PcapFile.new.file_to_array(:f => 'sample.pcap')
+    pcaps = PcapFile.new.file_to_array(f: 'sample.pcap')
     p = Packet.parse(pcaps[3]) # Really ICMP reply
     assert_equal(p.to_s, pcaps[3])
     assert_kind_of(EthPacket, p)
@@ -140,7 +140,7 @@ class PacketParsersTest < Test::Unit::TestCase
   def test_parse_ipv6_packet
     assert_equal(IPv6Packet.layer, 2)
     assert_equal(IPv6Packet.layer_symbol, :internet)
-    pcaps = PcapFile.new.file_to_array(:f => 'sample-ipv6.pcap')
+    pcaps = PcapFile.new.file_to_array(f: 'sample-ipv6.pcap')
     p = Packet.parse(pcaps[0]) # Really an IPv6 packet
     assert_equal(p.to_s, pcaps[0])
     assert_kind_of(EthPacket, p)
@@ -151,7 +151,7 @@ class PacketParsersTest < Test::Unit::TestCase
   def test_parse_hsrp_packet
     assert_equal(HSRPPacket.layer, 4)
     assert_equal(HSRPPacket.layer_symbol, :application)
-    pcaps = PcapFile.new.file_to_array(:f => 'sample_hsrp_pcapr.cap')
+    pcaps = PcapFile.new.file_to_array(f: 'sample_hsrp_pcapr.cap')
     p = Packet.parse(pcaps[0]) # Really an HSRP Hello packet
     assert_equal(p.to_s, pcaps[0])
     assert_kind_of(EthPacket, p)
@@ -162,8 +162,8 @@ class PacketParsersTest < Test::Unit::TestCase
 
   def test_parse_hsrp_as_udp
     assert_equal(:application, HSRPPacket.layer_symbol)
-    pcaps = PcapFile.new.file_to_array(:f => 'sample_hsrp_pcapr.cap')
-    p = Packet.parse(pcaps[0], :parse_app => false) # Really an HSRP Hello packet
+    pcaps = PcapFile.new.file_to_array(f: 'sample_hsrp_pcapr.cap')
+    p = Packet.parse(pcaps[0], parse_app: false) # Really an HSRP Hello packet
     assert_kind_of(UDPPacket, p)
     assert(!p.kind_of?(HSRPPacket), "Misidentified HSRP packet when we didn't want it!")
   end

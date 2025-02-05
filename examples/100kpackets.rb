@@ -27,7 +27,7 @@ count = 0
     @pcaps << u
   end
   pfile = PacketFu::PcapFile.new
-  res = pfile.array_to_file(:filename => '/tmp/out.pcap', :array => @pcaps, :append => true)
+  res = pfile.array_to_file(filename: '/tmp/out.pcap', array: @pcaps, append: true)
   count += res.last
   puts "Wrote #{count} packets in #{Time.now.utc - start_time} seconds"
 end

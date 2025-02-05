@@ -119,15 +119,15 @@ class TcpOptionsTest < Test::Unit::TestCase
   def test_tcp_option
     t = TcpOption.new
     assert_equal("\x00", t.to_s)
-    t = TcpOption.new(:kind => 2, :optlen => 4, :value => 1024)
+    t = TcpOption.new(kind: 2, optlen: 4, value: 1024)
     assert_equal("\x02\x04\x04\x00", t.to_s)
-    t = TcpOption.new(:kind => 0xf0, :optlen => 6, :value => 1024)
+    t = TcpOption.new(kind: 0xf0, optlen: 6, value: 1024)
     assert_equal("\xf0\x06\x00\x00\x04\x00", t.to_s)
-    t = TcpOption.new(:kind => 0xf0, :optlen => 6, :value => '1024')
+    t = TcpOption.new(kind: 0xf0, optlen: 6, value: '1024')
     assert_equal("\xf0\x061024", t.to_s)
-    t = TcpOption.new(:kind => 0xf0, :optlen => 6, :value => nil)
+    t = TcpOption.new(kind: 0xf0, optlen: 6, value: nil)
     assert_equal("\xf0\x06", t.to_s)
-    t = TcpOption.new(:kind => 0xf1, :optlen => 10, :value => 'a1b2c3d4e5')
+    t = TcpOption.new(kind: 0xf1, optlen: 10, value: 'a1b2c3d4e5')
     assert_equal("\xf1\x0aa1b2c3d4e5", t.to_s)
   end
 
@@ -151,7 +151,7 @@ class TcpOptionsTest < Test::Unit::TestCase
     t = TcpOption::MSS.new
     t.read("\x02\x04\x05\xb4")
     assert_equal('MSS:1460', t.decode)
-    t = TcpOption::MSS.new(:value => 1460)
+    t = TcpOption::MSS.new(value: 1460)
     assert_equal("\x02\x04\x05\xb4", t.to_s)
     assert_equal('MSS:1460', t.decode)
   end
@@ -166,7 +166,7 @@ class TcpOptionsTest < Test::Unit::TestCase
     t = TcpOption::SACK.new
     assert_equal("\x05\x02", t.to_s)
     assert_equal('SACK:', t.decode)
-    t = TcpOption::SACK.new(:value => 'ABCD')
+    t = TcpOption::SACK.new(value: 'ABCD')
     assert_equal("\x05\x06\x41\x42\x43\x44", t.to_s)
     assert_equal('SACK:ABCD', t.decode)
     t = TcpOptions.new
@@ -175,7 +175,7 @@ class TcpOptionsTest < Test::Unit::TestCase
   end
 
   def test_echo
-    t = TcpOption::ECHO.new(:value => 'ABCD')
+    t = TcpOption::ECHO.new(value: 'ABCD')
     assert_equal("\x06\x06\x41\x42\x43\x44", t.to_s)
     assert_equal('ECHO:ABCD', t.decode)
     t = TcpOption::ECHO.new
@@ -184,7 +184,7 @@ class TcpOptionsTest < Test::Unit::TestCase
   end
 
   def test_echoreply
-    t = TcpOption::ECHOREPLY.new(:value => 'ABCD')
+    t = TcpOption::ECHOREPLY.new(value: 'ABCD')
     assert_equal("\x07\x06\x41\x42\x43\x44", t.to_s)
     assert_equal('ECHOREPLY:ABCD', t.decode)
     t = TcpOption::ECHOREPLY.new
@@ -295,7 +295,7 @@ class TCPPacketTest < Test::Unit::TestCase
   end
 
   def test_tcp_read
-    sample_packet = PcapFile.new.file_to_array(:f => 'sample.pcap')[7]
+    sample_packet = PcapFile.new.file_to_array(f: 'sample.pcap')[7]
     pkt = Packet.parse(sample_packet)
     assert_kind_of TCPPacket, pkt
     assert_equal(0x5a73, pkt.tcp_sum)
@@ -303,7 +303,7 @@ class TCPPacketTest < Test::Unit::TestCase
   end
 
   def test_tcp_alter
-    sample_packet = PcapFile.new.file_to_array(:f => 'sample2.pcap')[3]
+    sample_packet = PcapFile.new.file_to_array(f: 'sample2.pcap')[3]
     pkt = Packet.parse(sample_packet)
     assert_kind_of TCPPacket, pkt
     pkt.tcp_sport = 13013
@@ -319,7 +319,7 @@ class TCPPacketTest < Test::Unit::TestCase
     not_stripped.read(str)
     assert_equal 18, not_stripped.tcp_header.body.length
     stripped = TCPPacket.new
-    stripped.read(str, :strip => true)
+    stripped.read(str, strip: true)
     assert_equal 16, stripped.tcp_header.body.length
   end
 

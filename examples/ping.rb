@@ -10,7 +10,7 @@ ip = ARGV[0].chomp
 
 config = PacketFu::Utils.whoami?()
 
-icmp_packet = PacketFu::ICMPPacket.new(:config => config)
+icmp_packet = PacketFu::ICMPPacket.new(config: config)
 icmp_packet.ip_daddr = ip
 icmp_packet.payload = "I'm sending ICMP packets using PacketFu!!!"
 icmp_packet.icmp_type = 8
@@ -19,7 +19,7 @@ icmp_packet.recalc
 capture_thread = Thread.new do
   begin
     Timeout::timeout(3) {
-      cap = PacketFu::Capture.new(:iface => config[:iface], :start => true)
+      cap = PacketFu::Capture.new(iface: config[:iface], start: true)
       cap.stream.each do |p|
         pkt = PacketFu::Packet.parse p
         next unless pkt.is_icmp?

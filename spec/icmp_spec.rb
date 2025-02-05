@@ -93,7 +93,7 @@ describe ICMPPacket, 'when read from a pcap file' do
     end
 
     it 'should read a PCAP file from disk' do
-      sample_packet = PcapFile.new.file_to_array(:f => './test/sample.pcap')[2]
+      sample_packet = PcapFile.new.file_to_array(f: './test/sample.pcap')[2]
       pkt = Packet.parse(sample_packet)
 
       expect(pkt.is_icmp?).to be true

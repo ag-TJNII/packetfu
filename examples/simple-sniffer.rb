@@ -13,7 +13,7 @@ include PacketFu
 iface = ARGV[0] || PacketFu::Utils.default_int
 
 def sniff(iface)
-  cap = Capture.new(:iface => iface, :start => true)
+  cap = Capture.new(iface: iface, start: true)
   cap.stream.each do |p|
     pkt = Packet.parse p
     if pkt.is_ip?

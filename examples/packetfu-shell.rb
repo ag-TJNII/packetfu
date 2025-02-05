@@ -70,7 +70,7 @@ end
 begin
   $packetfu_default = PacketFu::Config.new(Utils.whoami?) if (@pcaprub_loaded && Process.euid.zero?)
 rescue RuntimeError
-  $packetfu_default = PacketFu::Config.new(Utils.whoami?(:iface => 'wlan0')) if (@pcaprub_loaded && Process.euid.zero?)
+  $packetfu_default = PacketFu::Config.new(Utils.whoami?(iface: 'wlan0')) if (@pcaprub_loaded && Process.euid.zero?)
 end
 
 banner

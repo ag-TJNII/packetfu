@@ -45,7 +45,7 @@ module PacketFu
       filter = args[:filter] || args[:bpf] || @filter
       start = args[:start] || false
       capture if start
-      bpf(:filter => filter) if filter
+      bpf(filter: filter) if filter
     end
 
     # capture() initializes the @stream varaible. Valid arguments are:
@@ -65,7 +65,7 @@ module PacketFu
             $stderr.print "Are you sure you're root? Error: "
             raise
           end
-          bpf(:filter => filter) if filter
+          bpf(filter: filter) if filter
         else
           @stream = []
         end
@@ -116,7 +116,7 @@ module PacketFu
     #     Provide a bpf filter to apply to packets moving from @stream to @array.
     def wire_to_array(args = {})
       filter = args[:filter] || args[:bpf] || @filter
-      bpf(:filter => filter) if filter
+      bpf(filter: filter) if filter
 
       while this_pkt = @stream.next
         @array << this_pkt

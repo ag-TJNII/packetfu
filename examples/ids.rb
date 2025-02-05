@@ -10,7 +10,7 @@ require 'packetfu'
 
 iface = ARGV[0] || PacketFu::Utils.default_int
 
-cap = PacketFu::Capture.new(:iface => iface, :start => true, :filter => 'ip')
+cap = PacketFu::Capture.new(iface: iface, start: true, filter: 'ip')
 
 loop do
   cap.stream.each do |pkt|

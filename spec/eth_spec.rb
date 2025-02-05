@@ -105,9 +105,9 @@ describe EthPacket do
       raw_header = '00032f1a74de001b1151b7ce0800'.scan(/../).map { |x| x.to_i(16) }.pack('C*')
 
       @eth_packet = EthPacket.new(
-        :eth_dst => "\x00\x03\x2f\x1a\x74\xde",
-        :eth_src => "\x00\x1b\x11\x51\xb7\xce",
-        :eth_proto => 0x0800
+        eth_dst: "\x00\x03\x2f\x1a\x74\xde",
+        eth_src: "\x00\x1b\x11\x51\xb7\xce",
+        eth_proto: 0x0800
       )
 
       expect(@eth_packet.to_s[0, 14]).to eql(raw_header)
@@ -120,9 +120,9 @@ describe EthPacket do
 
     it 'should write a pcap file to disk' do
       @eth_packet = EthPacket.new(
-        :eth_dst => "\x00\x03\x2f\x1a\x74\xde",
-        :eth_src => "\x00\x1b\x11\x51\xb7\xce",
-        :eth_proto => 0x0800
+        eth_dst: "\x00\x03\x2f\x1a\x74\xde",
+        eth_src: "\x00\x1b\x11\x51\xb7\xce",
+        eth_proto: 0x0800
       )
 
       @eth_packet.recalc

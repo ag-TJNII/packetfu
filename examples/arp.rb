@@ -25,7 +25,7 @@ IPAddr.new(target_ip)	# Check to see it's really an IP address, and not a herrin
 $packetfu_default = PacketFu::Config.new(PacketFu::Utils.whoami?).config
 
 def arp(target_ip)
-  arp_pkt = PacketFu::ARPPacket.new(:flavor => 'Windows')
+  arp_pkt = PacketFu::ARPPacket.new(flavor: 'Windows')
   arp_pkt.eth_saddr = arp_pkt.arp_saddr_mac = $packetfu_default[:eth_saddr]
   arp_pkt.eth_daddr = 'ff:ff:ff:ff:ff:ff'
   arp_pkt.arp_daddr_mac = '00:00:00:00:00:00'
@@ -36,8 +36,8 @@ def arp(target_ip)
   # Stick the Capture object in its own thread.
 
   cap_thread = Thread.new do
-    cap = PacketFu::Capture.new(:start => true,
-                                :filter => "arp src #{target_ip} and ether dst #{arp_pkt.eth_saddr}")
+    cap = PacketFu::Capture.new(start: true,
+                                filter: "arp src #{target_ip} and ether dst #{arp_pkt.eth_saddr}")
     arp_pkt.to_w # Shorthand for sending single packets to the default interface.
     target_mac = nil
     while target_mac.nil?

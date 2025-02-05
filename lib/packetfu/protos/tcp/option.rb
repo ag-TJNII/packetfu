@@ -84,7 +84,7 @@ module PacketFu
     # options will treat things a little differently; TS for example,
     # takes two values and concatenates them.
     def encode(str)
-      self[:value] = self.class.new(:value => str).value
+      self[:value] = self.class.new(value: str).value
     end
 
     # Returns true if this option has an optlen. Some don't.
@@ -103,7 +103,7 @@ module PacketFu
     class EOL < TcpOption
       def initialize(args = {})
         super(
-          args.merge(:kind => 0)
+          args.merge(kind: 0)
         )
       end
 
@@ -118,7 +118,7 @@ module PacketFu
     class NOP < TcpOption
       def initialize(args = {})
         super(
-          args.merge(:kind => 1)
+          args.merge(kind: 1)
         )
       end
 
@@ -133,8 +133,8 @@ module PacketFu
     class MSS < TcpOption
       def initialize(args = {})
         super(
-          args.merge(:kind => 2,
-                     :optlen => 4)
+          args.merge(kind: 2,
+                     optlen: 4)
         )
         self[:value] = Int16.new(args[:value])
       end
@@ -157,8 +157,8 @@ module PacketFu
     class WS < TcpOption
       def initialize(args = {})
         super(
-          args.merge(:kind => 3,
-                     :optlen => 3)
+          args.merge(kind: 3,
+                     optlen: 3)
         )
         self[:value] = Int8.new(args[:value])
       end
@@ -181,8 +181,8 @@ module PacketFu
     class SACKOK < TcpOption
       def initialize(args = {})
         super(
-          args.merge(:kind => 4,
-                     :optlen => 2)
+          args.merge(kind: 4,
+                     optlen: 2)
         )
       end
 
@@ -204,8 +204,8 @@ module PacketFu
     class SACK < TcpOption
       def initialize(args = {})
         super(
-          args.merge(:kind => 5,
-                     :optlen => ((args[:value] || '').size + 2))
+          args.merge(kind: 5,
+                     optlen: ((args[:value] || '').size + 2))
         )
       end
 
@@ -221,7 +221,7 @@ module PacketFu
       end
 
       def encode(str)
-        temp_obj = self.class.new(:value => str)
+        temp_obj = self.class.new(value: str)
         self[:value] = temp_obj.value
         self[:optlen] = temp_obj.optlen.value
         self
@@ -234,8 +234,8 @@ module PacketFu
     class ECHO < TcpOption
       def initialize(args = {})
         super(
-          args.merge(:kind => 6,
-                     :optlen => 6)
+          args.merge(kind: 6,
+                     optlen: 6)
         )
       end
 
@@ -255,8 +255,8 @@ module PacketFu
     class ECHOREPLY < TcpOption
       def initialize(args = {})
         super(
-          args.merge(:kind => 7,
-                     :optlen => 6)
+          args.merge(kind: 7,
+                     optlen: 6)
         )
       end
 
@@ -276,8 +276,8 @@ module PacketFu
     class TS < TcpOption
       def initialize(args = {})
         super(
-          args.merge(:kind => 8,
-                     :optlen => 10)
+          args.merge(kind: 8,
+                     optlen: 10)
         )
         self[:value] = StructFu::String.new.read(args[:value] || "\x00" * 8)
       end

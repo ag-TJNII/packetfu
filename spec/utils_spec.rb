@@ -125,14 +125,14 @@ describe Utils do
     before(:all) do
       @whoami = lambda { |iface|
         {
-          :iface => iface,
-          :eth_saddr => '00:01:02:03:dd:b3',
-          :eth_src => "\x00\x01\x02\x03\xdd\xb3",
-          :ip_saddr => '192.168.254.1',
-          :ip_src => 0xc0a8fe01,
-          :ip_src_bin => "\xc0\xa8\xfe\x01",
-          :eth_dst => "\x00\x01\x02\x03\xcc\xb2",
-          :eth_daddr => '00:01:02:03:cc:b2',
+          iface: iface,
+          eth_saddr: '00:01:02:03:dd:b3',
+          eth_src: "\x00\x01\x02\x03\xdd\xb3",
+          ip_saddr: '192.168.254.1',
+          ip_src: 0xc0a8fe01,
+          ip_src_bin: "\xc0\xa8\xfe\x01",
+          eth_dst: "\x00\x01\x02\x03\xcc\xb2",
+          eth_daddr: '00:01:02:03:cc:b2',
         }
       }
     end

@@ -5,5 +5,5 @@ rescue LoadError
 else
   RSpec::Core::RakeTask.new
 
-  task :default => :spec
+  task default: :spec
 end

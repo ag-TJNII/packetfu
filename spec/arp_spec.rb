@@ -61,10 +61,10 @@ describe ARPPacket do
 
     it 'should allow setting values at initialization' do
       opts_hash = {
-        :arp_hw => 1,
-        :arp_proto => 0x0800,
-        :arp_opcode => 2,
-        :arp_src_ip => "\xc0\xa8\x01\x02"
+        arp_hw: 1,
+        arp_proto: 0x0800,
+        arp_opcode: 2,
+        arp_src_ip: "\xc0\xa8\x01\x02"
       }
       arp = ARPPacket.new(opts_hash)
 
@@ -143,17 +143,17 @@ describe ARPPacket do
       end
 
       it 'should support a Windows flavor' do
-        @arp_packet = ARPPacket.new(:flavor => 'Windows')
+        @arp_packet = ARPPacket.new(flavor: 'Windows')
         expect(@arp_packet.payload).to eql("\x00" * 64)
       end
 
       it 'should support a Linux flavor' do
-        @arp_packet = ARPPacket.new(:flavor => 'Linux')
+        @arp_packet = ARPPacket.new(flavor: 'Linux')
         expect(@arp_packet.payload.size).to eql(32)
       end
 
       it 'should support a HP Deskjet flavor' do
-        @arp_packet = ARPPacket.new(:flavor => :hp_deskjet)
+        @arp_packet = ARPPacket.new(flavor: :hp_deskjet)
         expect(@arp_packet.payload.size).to eql(18)
       end
     end

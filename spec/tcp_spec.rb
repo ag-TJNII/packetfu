@@ -51,7 +51,7 @@ describe TCPPacket do
         tcp_hlen_numeric(6)
       end
       context 'TcpHlen set via a TcpHlen for the setter' do
-        before { subject.tcp_hlen = TcpHlen.new(:hlen => 7) }
+        before { subject.tcp_hlen = TcpHlen.new(hlen: 7) }
         tcp_hlen_numeric(7)
       end
     end
@@ -73,7 +73,7 @@ describe TCPPacket do
         tcp_reserved_numeric(3)
       end
       context 'TcpReserved set via a TcpReserved for the setter' do
-        before { subject.tcp_reserved = TcpReserved.new(:r1 => 1, :r2 => 0, :r3 => 1) }
+        before { subject.tcp_reserved = TcpReserved.new(r1: 1, r2: 0, r3: 1) }
         tcp_reserved_numeric(5)
       end
     end
@@ -95,7 +95,7 @@ describe TCPPacket do
         tcp_ecn_numeric(3)
       end
       context 'TcpEcn set via a TcpEcn for the setter' do
-        before { subject.tcp_ecn = TcpEcn.new(:n => 1, :c => 0, :e => 1) }
+        before { subject.tcp_ecn = TcpEcn.new(n: 1, c: 0, e: 1) }
         tcp_ecn_numeric(5)
       end
     end
@@ -163,7 +163,7 @@ describe TCPPacket do
     end
 
     it 'should create TCP on IPv6 packets' do
-      tcp = TCPPacket.new(:on_ipv6 => true)
+      tcp = TCPPacket.new(on_ipv6: true)
       expect(tcp.ip_header).to be_nil
       expect(tcp.ipv6_header).to be_a(IPv6Header)
 
@@ -190,7 +190,7 @@ describe TCPPacket do
     end
 
     it 'should support peek functionnality (IPv6 case)' do
-      tcp = TCPPacket.new(:on_ipv6 => true)
+      tcp = TCPPacket.new(on_ipv6: true)
       tcp.ipv6_saddr = '2000::1'
       tcp.ipv6_daddr = '2001::1'
       tcp.tcp_src = 32756

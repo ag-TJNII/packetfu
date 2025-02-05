@@ -10,7 +10,7 @@ require 'packetfu'
 
 iface = ARGV[0] || PacketFu::Utils.default_int
 
-cap = PacketFu::Capture.new(:iface => iface, :start => true, :filter => 'ip')
+cap = PacketFu::Capture.new(iface: iface, start: true, filter: 'ip')
 
 attack_patterns = ['^gotcha', 'owned!*$', "^\x04[^\x00]{50}"]
 

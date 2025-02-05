@@ -85,7 +85,7 @@ describe ICMPv6Packet, 'when read from a pcap file' do
     end
 
     it 'should read a PCAP file from disk' do
-      sample_packet = PcapFile.new.file_to_array(:f => './spec/ipv6_icmp.pcap').first
+      sample_packet = PcapFile.new.file_to_array(f: './spec/ipv6_icmp.pcap').first
       pkt = Packet.parse(sample_packet)
 
       expect(pkt.is_icmpv6?).to be true

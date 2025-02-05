@@ -156,7 +156,7 @@ module PacketFu
 
     # Called by initialize to set the initial fields.
     def init_fields(args = {})
-      args[:timestamp] = Timestamp.new(:endian => args[:endian]).read(args[:timestamp])
+      args[:timestamp] = Timestamp.new(endian: args[:endian]).read(args[:timestamp])
       args[:incl_len] = args[:incl_len].nil? ? @int32.new(args[:data].to_s.size) : @int32.new(args[:incl_len])
       args[:orig_len] = @int32.new(args[:orig_len])
       args[:data] = StructFu::String.new.read(args[:data])
@@ -210,7 +210,7 @@ module PacketFu
       end
       body = str[24, str.size]
       while body.size > 16 # TODO: catch exceptions on malformed packets at end
-        p = PcapPacket.new(:endian => @endian)
+        p = PcapPacket.new(endian: @endian)
         p.read(body)
         self << p
         body = body[p.sz, body.size]
@@ -239,7 +239,7 @@ module PacketFu
       # Takes a given file and returns an array of the packet bytes. Here
       # for backwards compatibilty.
       def file_to_array(fname)
-        PcapFile.new.file_to_array(:f => fname)
+        PcapFile.new.file_to_array(f: fname)
       end
 
       # Takes a given file name, and reads out the packets. If given a block,
@@ -255,7 +255,7 @@ module PacketFu
           file_handle = File.open(fname, 'rb')
           file_header.read file_handle.read(24)
           packet_count = 0
-          pcap_packet = PcapPacket.new(:endian => file_header.endian)
+          pcap_packet = PcapPacket.new(endian: file_header.endian)
           while pcap_packet.read file_handle.read(16) do
             len = pcap_packet.incl_len
             pcap_packet.data = StructFu::String.new.read(file_handle.read(len.to_i))
@@ -324,8 +324,8 @@ module PacketFu
 
     # Called by initialize to set the initial fields.
     def init_fields(args = {})
-      args[:head] = PcapHeader.new(:endian => args[:endian]).read(args[:head])
-      args[:body] = PcapPackets.new(:endian => args[:endian]).read(args[:body])
+      args[:head] = PcapHeader.new(endian: args[:endian]).read(args[:head])
+      args[:body] = PcapPackets.new(endian: args[:endian]).read(args[:body])
       return args
     end
 
@@ -427,20 +427,20 @@ module PacketFu
           this_orig_len = this_incl_len
           this_data = p.values.first
         else # it's an array
-          this_ts = Timestamp.new(:endian => self[:endian], :sec => ts + (ts_inc * i)).to_s
+          this_ts = Timestamp.new(endian: self[:endian], sec: ts + (ts_inc * i)).to_s
           this_incl_len = p.to_s.size
           this_orig_len = this_incl_len
           this_data = p.to_s
         end
-        this_pkt = PcapPacket.new({ :endian => self[:endian],
-                                    :timestamp => this_ts,
-                                    :incl_len => this_incl_len,
-                                    :orig_len => this_orig_len,
-                                    :data => this_data })
+        this_pkt = PcapPacket.new({ endian: self[:endian],
+                                    timestamp: this_ts,
+                                    incl_len: this_incl_len,
+                                    orig_len: this_orig_len,
+                                    data: this_data })
         self[:body] << this_pkt
       end
       if filename
-        self.to_f(:filename => filename, :append => append)
+        self.to_f(filename: filename, append: append)
       else
         self
       end
@@ -489,7 +489,7 @@ module PacketFu
       else
         f = filename.to_s
       end
-      self.to_file(:filename => f.to_s, :append => false)
+      self.to_file(filename: f.to_s, append: false)
     end
 
     # Shorthand method for appending to a file. Can take either :file => 'name.pcap' or
@@ -500,7 +500,7 @@ module PacketFu
       else
         f = filename.to_s
       end
-      self.to_file(:filename => f, :append => true)
+      self.to_file(filename: f, append: true)
     end
   end
 end
@@ -549,10 +549,10 @@ module PacketFu
         arr = args[:arr] || args[:array] || []
         ts = args[:ts] || args[:timestamp] || Time.now.to_i
         ts_inc = args[:ts_inc] || args[:timestamp_increment]
-        pkts = PcapFile.new.array_to_file(:endian => PacketFu.instance_variable_get(:@byte_order),
-                                          :arr => arr,
-                                          :ts => ts,
-                                          :ts_inc => ts_inc)
+        pkts = PcapFile.new.array_to_file(endian: PacketFu.instance_variable_get(:@byte_order),
+                                          arr: arr,
+                                          ts: ts,
+                                          ts_inc: ts_inc)
         pkts.body
       end
 
@@ -567,10 +567,10 @@ module PacketFu
         append = args[:append]
         Read.set_byte_order(byte_order) if [:big, :little].include? byte_order
         pf = PcapFile.new
-        pf.array_to_file(:endian => PacketFu.instance_variable_get(:@byte_order),
-                         :arr => arr,
-                         :ts => ts,
-                         :ts_inc => ts_inc)
+        pf.array_to_file(endian: PacketFu.instance_variable_get(:@byte_order),
+                         arr: arr,
+                         ts: ts,
+                         ts_inc: ts_inc)
         if filename && filename != :nowrite
           if append
             pf.append(filename)
@@ -587,7 +587,7 @@ module PacketFu
 
       # Shorthand method for appending to a file. Also shouldn't use.
       def append(args = {})
-        array_to_file(args.merge(:append => true))
+        array_to_file(args.merge(append: true))
       end
     end
   end

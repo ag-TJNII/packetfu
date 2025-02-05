@@ -33,10 +33,10 @@ describe Inject do
       # Can only run this if we're root
       if Process.uid == 0
         options = {
-          :iface => PacketFu::Utils::default_int,
-          :snaplen => 0xfffe,
-          :promisc => true,
-          :timeout => 5,
+          iface: PacketFu::Utils::default_int,
+          snaplen: 0xfffe,
+          promisc: true,
+          timeout: 5,
         }
         @inject = PacketFu::Capture.new(options)
 
@@ -67,7 +67,7 @@ describe Inject do
     # Can only run these if we're root
     if Process.uid == 0
       it 'should allow creating an inject object with non-std attributes' do
-        udp_packet = PacketFu::UDPPacket.new(:iface => PacketFu::Utils::default_int)
+        udp_packet = PacketFu::UDPPacket.new(iface: PacketFu::Utils::default_int)
         udp_packet.ip_dst = PacketFu::Utils.rand_routable_daddr.to_s
         udp_packet.udp_dport = 12345
         udp_packet.udp_sport = 12345
@@ -80,7 +80,7 @@ describe Inject do
       it 'should allow creating an inject object with non-std attributes' do
         packet_array = []
 
-        udp_packet = PacketFu::UDPPacket.new(:iface => PacketFu::Utils::default_int)
+        udp_packet = PacketFu::UDPPacket.new(iface: PacketFu::Utils::default_int)
         udp_packet.ip_dst = PacketFu::Utils.rand_routable_daddr.to_s
         udp_packet.udp_dport = 12345
         udp_packet.udp_sport = 12345
@@ -88,8 +88,8 @@ describe Inject do
         udp_packet.recalc
         3.times { packet_array << udp_packet.to_s }
 
-        inject = PacketFu::Inject.new(:iface => PacketFu::Utils::default_int)
-        expect(inject.array_to_wire(:array => packet_array)).to eql([3, 3, 186])
+        inject = PacketFu::Inject.new(iface: PacketFu::Utils::default_int)
+        expect(inject.array_to_wire(array: packet_array)).to eql([3, 3, 186])
       end
     end
   end

@@ -34,7 +34,7 @@ build_oui_list
 $root_ok = true if Process.euid.zero?
 
 def arp_everyone
-  my_net = PacketFu::Config.new(PacketFu::Utils.whoami?(:iface => (ARGV[0] || 'wlan0')))
+  my_net = PacketFu::Config.new(PacketFu::Utils.whoami?(iface: (ARGV[0] || 'wlan0')))
   threads = []
   network = ARGV[1] || '192.168.2'
   print 'Arping around...'
